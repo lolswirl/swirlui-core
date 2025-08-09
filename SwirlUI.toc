@@ -3,6 +3,10 @@
 ## Notes: Custom configs made for |cff02fd98Swirl|rUI
 ## Author: Swirl
 ## IconTexture: Interface\AddOns\SwirlUI\media\icon.png
+## Group: SwirlUI
+## Version: 1.0.0
+## SavedVariables: SwirlUIDB
+## Dependencies: SharedMedia_SwirlUI
 
 ## Category: User Interface
 ## Category-deDE: Benutzerinterface
@@ -15,3 +19,9 @@
 ## Category-ruRU: Интерфейс пользователя
 ## Category-zhCN: 用户界面
 ## Category-zhTW: 使用者介面
+
+Libs/Init.xml
+
+Setup.lua
+
+SwirlUI.lua
