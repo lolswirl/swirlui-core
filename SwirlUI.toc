@@ -7,6 +7,7 @@
 ## Version: 1.0.0
 ## SavedVariables: SwirlUIDB
 ## Dependencies: SharedMedia_SwirlUI
+## X-Wago-ID: nKW1DYNE
 
 ## Category: User Interface
 ## Category-deDE: Benutzerinterface
