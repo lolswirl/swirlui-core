@@ -1,0 +1,9 @@
+package-as: SwirlUI
+
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
+
+ignore:
+  - README.md
+  - generate_changelog.sh
