@@ -1,7 +1,4 @@
 local _, SwirlUI = ...
-local FONT = "Interface\\AddOns\\SharedMedia_SwirlUI\\font\\Swirl.ttf"
-local FONT_SIZE = 12
-local FONT_SIZE_SMALL = 8
 
 local PLAYER_CLASS = select(2, UnitClass("player"))
 local PLAYER_CLASS_COLOR = RAID_CLASS_COLORS[PLAYER_CLASS]
@@ -32,7 +29,7 @@ local function BugSackMinimapButton()
     SwirlUIBugSackButton:SetSize(16, 16)
     SwirlUIBugSackButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 1.5, 1.5)
     SwirlUIBugSackButton.Text = SwirlUIBugSackButton:CreateFontString(nil, "OVERLAY")
-    SwirlUIBugSackButton.Text:SetFont(FONT, FONT_SIZE, "OUTLINE")
+    SwirlUIBugSackButton.Text:SetFont(SwirlUI.Font, SwirlUI.FontSize, "OUTLINE")
     SwirlUIBugSackButton.Text:SetPoint("CENTER", SwirlUIBugSackButton, "CENTER", 0, 0)
     SwirlUIBugSackButton.Text:SetTextColor(1, 1, 1)
     SwirlUIBugSackButton.Text:SetText("|cFF49AF4C0|r")
@@ -153,11 +150,11 @@ local function DurabilityMinimapDataText()
     end
     
     local SwirlUIDurabilityFrame = CreateFrame("Frame", "SwirlUIDurabilityFrame", _G["SwirlUIBugSackButton"])
-    SwirlUIDurabilityFrame:SetSize(20, FONT_SIZE)
+    SwirlUIDurabilityFrame:SetSize(20, SwirlUI.FontSize)
     SwirlUIDurabilityFrame:SetPoint("LEFT", _G["SwirlUIBugSackButton"], "RIGHT", 2, 0)
     SwirlUIDurabilityFrame:SetFrameStrata("HIGH")
     SwirlUIDurabilityFrame.Text = SwirlUIDurabilityFrame:CreateFontString(nil, "OVERLAY")
-    SwirlUIDurabilityFrame.Text:SetFont(FONT, FONT_SIZE, "OUTLINE")
+    SwirlUIDurabilityFrame.Text:SetFont(SwirlUI.Font, SwirlUI.FontSize, "OUTLINE")
     SwirlUIDurabilityFrame.Text:SetShadowOffset(0, 0)
     SwirlUIDurabilityFrame.Text:SetPoint("LEFT", SwirlUIDurabilityFrame, "LEFT", 0, 0)
 
@@ -240,27 +237,27 @@ local function AddOnSetups()
 end
 
 local function SetupActionStatusFont()
-    ActionStatus.Text:SetFont(FONT, FONT_SIZE, "OUTLINE")
+    ActionStatus.Text:SetFont(SwirlUI.Font, SwirlUI.FontSize, "OUTLINE")
     ActionStatus.Text:SetShadowOffset(0, 0)
     ActionStatus.Text:ClearAllPoints()
     ActionStatus.Text:SetPoint("CENTER", UIParent, "CENTER", 0, 200)
 end
 
 local function SetupUIErrorsFrameFont()
-    UIErrorsFrame:SetFont(FONT, FONT_SIZE, "OUTLINE")
+    UIErrorsFrame:SetFont(SwirlUI.Font, SwirlUI.FontSize, "OUTLINE")
     UIErrorsFrame:SetShadowOffset(0, 0)
     UIErrorsFrame:ClearAllPoints()
     UIErrorsFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 200)
 end
 
 local function SetupChatBubbleFont()
-    ChatBubbleFont:SetFont(FONT, FONT_SIZE_SMALL, "OUTLINE")
+    ChatBubbleFont:SetFont(SwirlUI.Font, SwirlUI.FontSizeSmall, "OUTLINE")
 end
 
 local function SetupObjectiveTrackerFont()
-    ObjectiveTrackerLineFont:SetFont(FONT, FONT_SIZE, "OUTLINE")
+    ObjectiveTrackerLineFont:SetFont(SwirlUI.Font, SwirlUI.FontSize, "OUTLINE")
     ObjectiveTrackerLineFont:SetShadowOffset(0, 0)
-    ObjectiveTrackerHeaderFont:SetFont(FONT, FONT_SIZE, "OUTLINE")
+    ObjectiveTrackerHeaderFont:SetFont(SwirlUI.Font, SwirlUI.FontSize, "OUTLINE")
     ObjectiveTrackerHeaderFont:SetShadowOffset(0, 0)
 end
 

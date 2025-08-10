@@ -23,6 +23,11 @@
 
 Libs/Init.xml
 
+Constants.lua
+Utils.lua
+Strings.lua
+ImportExport.lua
 Setup.lua
+GUI.lua
 
 SwirlUI.lua

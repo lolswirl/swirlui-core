@@ -2,6 +2,6 @@ local _, SwirlUI = ...
 local SUI = LibStub("AceAddon-3.0"):NewAddon("SwirlUI")
 
 function SUI:OnEnable()
-    print("|cff02fd98Swirl|rUI Core » |cff02fd98/swirlui|r for config")
+    print(string.format("%s » %s for config", SwirlUI.HeaderNoColon, SwirlUI.ApplyColor("/swirlui", "00ff96")))
     SwirlUI:Initialize()
 end

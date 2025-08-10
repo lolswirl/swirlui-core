@@ -1,6 +1,9 @@
 # SwirlUI Core
 customized features for [my ui](https://uipacks.wago.io/pack/swirl-ui)
 
+### import functionality for addons not included by wago installer
+
+### custom features
 - hides prat's text shadows
 - bugsack minimap button
 - durability minimap datatext + tooltip for repair cost
