@@ -10,8 +10,6 @@ SwirlUI.NameNoCore = SwirlUI.Title:gsub(" Core", "")
 SwirlUI.HeaderNoColon = string.format("%s%s", SwirlUI.Icon, SwirlUI.NameNoCore)
 SwirlUI.Header = string.format("%s:", SwirlUI.HeaderNoColon)
 
-SwirlUI.Profile = "swirl ui"
-
 -- font
 SwirlUI.Font = "Interface\\AddOns\\SharedMedia_SwirlUI\\font\\Swirl.ttf"
 SwirlUI.FontSize = 12
@@ -26,5 +24,6 @@ SwirlUI.ApplyColor = function(text, color)
     return string.format("|cFF%s%s|r", color, text)
 end
 
--- change
+-- profiles
+SwirlUI.Profile = "swirl ui"
 SwirlUI.ProfilesImported = false
