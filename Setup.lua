@@ -13,6 +13,10 @@ local function PratRemoveShadows()
     end
 end
 
+local function AddOnSetups()
+    PratRemoveShadows()
+end
+
 local function BugSackMinimapButton()
     if not C_AddOns.IsAddOnLoaded("BugSack") then return end
     local LDB = LibStub("LibDataBroker-1.1", true)
@@ -230,10 +234,52 @@ local function DurabilityMinimapDataText()
     SwirlUIDurabilityFrame:GetScript("OnEvent")(SwirlUIDurabilityFrame, "UPDATE_INVENTORY_DURABILITY")
 end
 
-local function AddOnSetups()
-    PratRemoveShadows()
+local function MailMinimapDataText()
+    local SwirlUIMailButton = CreateFrame("Frame", "SwirlUIMailButton", UIParent)
+    SwirlUIMailButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -5, -2)
+
+    SwirlUIMailButton.texture = SwirlUIMailButton:CreateTexture(nil, "OVERLAY")
+    SwirlUIMailButton.texture:SetAllPoints(SwirlUIMailButton)
+    SwirlUIMailButton.texture:SetTexture("Interface\\AddOns\\SwirlUI\\media\\mail.tga")
+    SwirlUIMailButton:SetSize(16, 16)
+
+    SwirlUIMailButton:RegisterEvent("UPDATE_PENDING_MAIL")
+    
+    function SwirlUIMailButton:UpdateMailVisibility()
+        if HasNewMail() then
+            self:Show()
+        else
+            self:Hide()
+        end
+    end
+
+    SwirlUIMailButton:SetScript("OnEvent", function(self, event)
+        if event == "UPDATE_PENDING_MAIL" then
+            self:UpdateMailVisibility()
+        end
+    end)
+
+    SwirlUIMailButton:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_CURSOR_RIGHT")
+        GameTooltip:AddLine("Unread mail from:")
+        local m1, m2, m3 = GetLatestThreeSenders()
+        GameTooltip:AddLine(m1)
+        GameTooltip:AddLine(m2)
+        GameTooltip:AddLine(m3)
+        GameTooltip:Show()
+    end)
+
+    SwirlUIMailButton:SetScript("OnLeave", function()
+        GameTooltip:Hide()
+    end)
+
+    SwirlUIMailButton:UpdateMailVisibility()
+end
+
+local function MinimapData()
     BugSackMinimapButton()
     DurabilityMinimapDataText()
+    MailMinimapDataText()
 end
 
 local function SetupActionStatusFont()
@@ -296,4 +342,5 @@ end
 function SwirlUI:Initialize()
     BlizzardSetups()
     AddOnSetups()
+    MinimapData()
 end
