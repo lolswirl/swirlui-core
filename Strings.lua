@@ -20,6 +20,20 @@ SwirlUI.ImportProfiles = {
         string = "TsvuVPnmq4Fn9TbYjbiPpw6ORivf6QtFzpyjJTP1Qo2iBhTw(1V7CcJa9HPPnjuWo(UVVpF33fwgRHrFvlv3iLoBGTKrB1HGgxVLrdcUrXQZyuHZ5LP3DW5AxgT4sHXjE7wNDN(fehxx0OTkgDZZnpSUEfJUZzJu9beICgLB0Vyz0Bxv3S6jGiN1jE17AviwFaXuYOV3ZMHhccNX5t0Kw0GNG)YtplspNHpJ9eXO0FQ9gC7bNv1OEp(xRThwDxZLklrFTZ3YnNjcY0Q8KoiN0rkwk3kIDC)hdHtMo73z0NW0RNDkh4MpjB(53HEGU3fIAObCoRzdyKDbT351kR0CI1X1QZd)ZLxOsfvHOsEbzLxEdFhFrFo34vw(FuCqoBbVJYpuSh8sn62(DOhc9DjZuVEGJF0ReA0hYOxj)YvsOd1fD)a8EySHeu5zvq0Gd1k5E0ssRDyl2ZL6UaQ6EDUmr)XYsVqV8AT1OpCyzxm6Sp4e8iYm4e44yXTU29CFSvb9N6SI8(zG1waJCqbs9UDArNjIw45Krtq1zxJB5Adqk5KwHeN3dYMoaYccaPWZ3f12x2K0kmlqqzDeQr3Uw((ZURA5xbbSw4ggjh3A)K83EjrhR3H)FJXKKjH8VpfV3f0dnc0O0S5XNw)T7BWChTPGD3KffKIIQ85vLfzesvgB3K5jCHJkxSipNqkNLxvMrM1FuCOTa6k65I3G6XOIA4v(E4p63F(MNwD6Rjq0rg7x",
         database = BasicMinimapSV,
         color = "9bf162"
+    },
+    {
+        name = "MinimapStats",
+        data = {
+            ["DisplayAffixes"] = false,
+            ["ClassAccentColour"] = true,
+            ["DateFormat"] = "MM/DD/YY",
+            ["FontFace"] = "Interface\\Addons\\SharedMedia_SwirlUI\\font\\Swirl.ttf",
+            ["DisplayAffixThresholds"] = false,
+            ["TimeFormat"] = "12H",
+            ["SystemStatsFormatString"] = "FPS HomeMS",
+        },
+        database = MSDB,
+        color = "8080ff"
     }
 }
 

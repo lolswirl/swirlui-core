@@ -4,19 +4,11 @@ IsAddOnLoaded = C_AddOns.IsAddOnLoaded
 
 SwirlUI.Imports = {}
 
-function SwirlUI.Imports:IsImportActive(addonName, database)
-    return SwirlUI.Utils:HasProfile(addonName, database, true)
-end
-
 function SwirlUI.Imports:CanApplyProfiles()
-    for _, profile in ipairs(SwirlUI.ImportProfiles) do
-        if not SwirlUI.Utils:HasProfile(profile.name, profile.database, true) then
-            return false
-        end
-    end
+    local allProfiles = SwirlUI.Utils:GetAllProfiles()
     
-    for _, addon in ipairs(SwirlUI.ApplyAddons) do
-        if not SwirlUI.Utils:HasProfile(addon.name, addon.database, true) then
+    for _, profile in ipairs(allProfiles) do
+        if not SwirlUI.Utils:HasProfile(profile, true) then
             return false
         end
     end
@@ -60,21 +52,13 @@ function SwirlUI.Imports:ApplyProfiles()
 
     local steps = {}
     local stepIndex = 0
+    local allProfiles = SwirlUI.Utils:GetAllProfiles()
     
-    for _, profile in ipairs(SwirlUI.ImportProfiles) do
-        if self:IsImportActive(profile.name, profile.database) then
+    for _, profile in ipairs(allProfiles) do
+        if SwirlUI.Utils:IsProfileApplied(profile) then
             stepIndex = stepIndex + 1
             table.insert(steps, function()
-                self:ApplyProfile(profile.name, profile.database, profile.color)
-            end)
-        end
-    end
-
-    for _, addon in ipairs(SwirlUI.ApplyAddons) do
-        if self:IsImportActive(addon.name, addon.database) then
-            stepIndex = stepIndex + 1
-            table.insert(steps, function()
-                self:ApplyProfile(addon.name, addon.database, addon.color)
+                SwirlUI.Utils:ApplyProfile(profile)
             end)
         end
     end
@@ -87,26 +71,6 @@ function SwirlUI.Imports:ApplyProfiles()
         SwirlUI:ReloadDialog()
     end)
     
-    return true
-end
-
-function SwirlUI.Imports:ApplyProfile(addonName, database, color)
-    if not SwirlUI.Utils:HasProfile(addonName, database, false) then
-        return false
-    end
-    
-    local profileKey = string.format("%s - %s", UnitName("player"), GetRealmName())
-    local activeProfile = database["profileKeys"] and database["profileKeys"][profileKey]
-
-    if activeProfile == SwirlUI.Profile then
-        print(string.format("%s %s profile is already applied", SwirlUI.Header, SwirlUI.ApplyColor(addonName, color)))
-    else
-        if not database["profileKeys"] then
-            database["profileKeys"] = {}
-        end
-        database["profileKeys"][profileKey] = SwirlUI.Profile
-        print(string.format("%s Applied %s profile", SwirlUI.Header, SwirlUI.ApplyColor(addonName, color)))
-    end
     return true
 end
 
@@ -148,10 +112,28 @@ function SwirlUI.Imports:ExportBasicMinimap()
     return SwirlUI.Utils:Export(data, basicMinimap)
 end
 
+function SwirlUI.Imports:ImportMinimapStats()
+    local importProfile = SwirlUI.Utils:GetImportProfile("MinimapStats")
+    if not importProfile or not SwirlUI.Utils:CheckAddOnLoaded(importProfile) then
+        return false
+    end
+    importProfile.database.global = importProfile.data
+    SwirlUI.ProfilesImported = true
+    print(string.format("%s Imported %s", SwirlUI.Header, SwirlUI.ApplyColor(importProfile.name, importProfile.color)))
+
+end
+
+function SwirlUI.Imports:ExportMinimapStats()
+    local minimapStats = SwirlUI.Utils:GetImportProfile("MinimapStats")
+    local data = minimapStats.database.global
+    return SwirlUI.Utils:Export(data, minimapStats)
+end
+
+
 function SwirlUI.Imports:GetAddonStatus(addonName, database)
     if not IsAddOnLoaded(addonName) then
         return "Disabled", SwirlUI.Hostile
-    elseif self:IsImportActive(addonName, database) then
+    elseif SwirlUI.Utils:HasProfile(addonName, database, true) then
         return "Active", SwirlUI.Friendly
     else
         return "Ready", SwirlUI.Neutral
@@ -160,29 +142,16 @@ end
 
 function SwirlUI.Imports:GetProfileStatus()
     local status = {}
+    local allProfiles = SwirlUI.Utils:GetAllProfiles()
     
-    for _, profile in ipairs(SwirlUI.ImportProfiles) do
+    for _, profile in ipairs(allProfiles) do
         local addonLoaded = IsAddOnLoaded(profile.name)
         local hasDB = addonLoaded and profile.database ~= nil
-        local hasProfile = SwirlUI.Utils:HasProfile(profile.name, profile.database, true)
+        local hasProfile = SwirlUI.Utils:HasProfile(profile, true)
 
         table.insert(status, {
             name = profile.name,
             color = profile.color or "FFFFFF",
-            addonLoaded = addonLoaded,
-            hasDB = hasDB,
-            hasProfile = hasProfile
-        })
-    end
-    
-    for _, addon in ipairs(SwirlUI.ApplyAddons) do
-        local addonLoaded = IsAddOnLoaded(addon.name)
-        local hasDB = addonLoaded and addon.database ~= nil
-        local hasProfile = SwirlUI.Utils:HasProfile(addon.name, addon.database, true)
-        
-        table.insert(status, {
-            name = addon.name,
-            color = addon.color or "FFFFFF", 
             addonLoaded = addonLoaded,
             hasDB = hasDB,
             hasProfile = hasProfile

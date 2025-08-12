@@ -8,14 +8,19 @@ local characterProfile = string.format("%s - %s", UnitName("player"), GetRealmNa
 
 SwirlUI.Utils = {}
 
-function SwirlUI.Utils:HasProfile(addonName, database, silent)
-    if not IsAddOnLoaded(addonName) then
+function SwirlUI.Utils:HasProfile(addon, silent)
+    if not IsAddOnLoaded(addon.name) then
         return false
     end
+
+    -- minimapstats doesn't have profiles lol
+    if addon.name == "MinimapStats" then
+        return true
+    end
     
-    if not database or not database["profiles"] or not database["profiles"][SwirlUI.Profile] then
+    if not addon.database or not addon.database["profiles"] or not addon.database["profiles"][SwirlUI.Profile] then
         if not silent then
-            print(string.format("%s No profile found for %s", SwirlUI.Header, addonName))
+            print(string.format("%s No profile found for %s", SwirlUI.Header, addon.name))
         end
         return false
     end
@@ -30,68 +35,90 @@ function SwirlUI.Utils:CheckAddOnLoaded(addon)
     return true
 end
 
-function SwirlUI.Utils:IsProfileApplied(addonName, database)
-    if not self:HasProfile(addonName, database, true) then
-        return false
+function SwirlUI.Utils:IsProfileApplied(addon)
+    if addon.name == "MinimapStats" then
+        if not addon.database or not addon.database["global"] then
+            return false
+        end
+
+        local hasAllValues = true
+        for key, value in pairs(addon.data) do
+            if addon.database.global[key] ~= value then
+                hasAllValues = false
+                break
+            end
+        end
+
+        return hasAllValues
     end
 
     local profileKey = string.format("%s - %s", UnitName("player"), GetRealmName())
-    local activeProfile = database["profileKeys"] and database["profileKeys"][profileKey]
+    local activeProfile = addon.database["profileKeys"] and addon.database["profileKeys"][profileKey]
     return activeProfile == SwirlUI.Profile
 end
 
-function SwirlUI.Utils:GetAddonStatus(addonName, database)
-    if not IsAddOnLoaded(addonName) then
+function SwirlUI.Utils:GetAddonStatus(addon)
+    if not IsAddOnLoaded(addon.name) then
         return "AddOn Disabled", SwirlUI.Hostile
     end
 
-    if not self:HasProfile(addonName, database, true) then
+    if not self:HasProfile(addon, true) then
         return "No Profile! Import below", SwirlUI.Hostile
     end
 
-    if self:IsProfileApplied(addonName, database) then
+    if self:IsProfileApplied(addon) then
         return "Active", SwirlUI.Friendly
     end
 
     return "Ready", SwirlUI.Neutral
 end
 
-function SwirlUI.Utils:GetAddonStatusColor(addonName, database)
-    local _, color = self:GetAddonStatus(addonName, database)
+function SwirlUI.Utils:GetAddonStatusColor(addon)
+    local _, color = self:GetAddonStatus(addon)
     return color
 end
 
-function SwirlUI.Utils:GetAddonStatusText(addonInfo)
-    local addonName = addonInfo.name
-    local status, statusColor = self:GetAddonStatus(addonName, addonInfo.database)
-    local addonText = SwirlUI.ApplyColor(addonInfo.name or addonName, addonInfo.color)
+function SwirlUI.Utils:GetAddonStatusText(addon)
+    local status, statusColor = self:GetAddonStatus(addon)
+    local addonText = SwirlUI.ApplyColor(addon.name, addon.color)
     local statusText = SwirlUI.ApplyColor(status, statusColor)
     
     return string.format("%s: %s", addonText, statusText)
 end
 
-function SwirlUI.Utils:ApplyProfile(addonName, database, color)
-    if not IsAddOnLoaded(addonName) then
-        print(string.format("%s %s addon not loaded", SwirlUI.Header, SwirlUI.ApplyColor(addonName, color)))
+function SwirlUI.Utils:ApplyProfile(profile)
+    if not IsAddOnLoaded(profile.name) then
+        print(string.format("%s %s addon not loaded", SwirlUI.Header, SwirlUI.ApplyColor(profile.name, profile.color)))
         return false
     end
-    
-    if not database or not database["profiles"] or not database["profiles"][SwirlUI.Profile] then
-        print(string.format("%s No profile found for %s", SwirlUI.Header, SwirlUI.ApplyColor(addonName, color)))
+
+    if profile.name == "MinimapStats" then
+        if not profile.database or not profile.database["global"] then
+            print(string.format("%s No profile found for %s", SwirlUI.Header, SwirlUI.ApplyColor(profile.name, profile.color)))
+            return false
+        end
+
+        SwirlUI.Imports:ImportMinimapStats()
+        print(string.format("%s Applied %s profile", SwirlUI.Header, SwirlUI.ApplyColor(profile.name, profile.color)))
+        return true
+    end
+
+    if not profile.database or not profile.database["profiles"] or not profile.database["profiles"][SwirlUI.Profile] then
+        print(string.format("%s No profile found for %s", SwirlUI.Header, SwirlUI.ApplyColor(profile.name, profile.color)))
         return false
     end
     
     local profileKey = string.format("%s - %s", UnitName("player"), GetRealmName())
-    local activeProfile = database["profileKeys"] and database["profileKeys"][profileKey]
+    local activeProfile = profile.database["profileKeys"] and profile.database["profileKeys"][profileKey]
 
     if activeProfile == SwirlUI.Profile then
-        print(string.format("%s %s profile is already applied", SwirlUI.Header, SwirlUI.ApplyColor(addonName, color)))
+        print(string.format("%s %s profile is already applied", SwirlUI.Header, SwirlUI.ApplyColor(profile.name, profile.color)))
     else
-        if not database["profileKeys"] then
-            database["profileKeys"] = {}
+        if not profile.database["profileKeys"] then
+            profile.database["profileKeys"] = {}
         end
-        database["profileKeys"][profileKey] = SwirlUI.Profile
-        print(string.format("%s Applied %s profile", SwirlUI.Header, SwirlUI.ApplyColor(addonName, color)))
+        profile.database["profileKeys"][profileKey] = SwirlUI.Profile
+        print(string.format("%s Applied %s profile", SwirlUI.Header, SwirlUI.ApplyColor(profile.name, profile.color)))
     end
     return true
 end
@@ -134,10 +161,22 @@ function SwirlUI.Utils:GetAllProfiles()
     return allProfiles
 end
 
-function SwirlUI.Utils:Export(data, addon, isNamespace)
+function SwirlUI.Utils:Decode(data)
+    local decoded = Compress:DecodeForPrint(data)
+    local decompressed = Compress:DecompressDeflate(decoded)
+    local _, result = Serialize:Deserialize(decompressed)
+    return result
+end
+
+function SwirlUI.Utils:Encode(data)
     local serialized = Serialize:Serialize(data)
     local compressed = Compress:CompressDeflate(serialized)
     local encoded = Compress:EncodeForPrint(compressed)
+    return encoded
+end
+
+function SwirlUI.Utils:Export(data, addon, isNamespace)
+    local encoded = self:Encode(data)
 
     local title = string.format("%s Exported", addon.name)
     if isNamespace then
@@ -155,9 +194,7 @@ function SwirlUI.Utils:Import(addonName)
         return false
     end
 
-    local decoded = Compress:DecodeForPrint(importProfile.string)
-    local decompressed = Compress:DecompressDeflate(decoded)
-    local _, data = Serialize:Deserialize(decompressed)
+    local data = SwirlUI.Utils:Decode(importProfile.string)
 
     local db = importProfile.database
 
@@ -165,9 +202,7 @@ function SwirlUI.Utils:Import(addonName)
     db.profileKeys = db.profileKeys or {}
 
     if addonName == "Prat-3.0" and importProfile.namespace and importProfile.namespace ~= "" then
-        local decodedNamespace = Compress:DecodeForPrint(importProfile.namespace)
-        local decompressedNamespace = Compress:DecompressDeflate(decodedNamespace)
-        local _, namespaceData = Serialize:Deserialize(decompressedNamespace)
+        local namespaceData = SwirlUI.Utils:Decode(importProfile.namespace)
 
         if db.namespaces then
             wipe(db.namespaces)

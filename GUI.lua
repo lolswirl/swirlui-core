@@ -51,19 +51,9 @@ local function CreateImportGUI()
             SwirlUI:ReloadDialog()
         end
     end)
-    
-    local frameWidget = frame.frame
-    frameWidget:SetScript("OnKeyDown", function(self, key)
-        if key == "ESCAPE" then
-            frame:Hide()
-            return
-        else 
-            self:SetPropagateKeyboardInput(true)
-        end
-    end)
-    frameWidget:EnableKeyboard(true)
-    
-    table.insert(UISpecialFrames, frameWidget:GetName() or "SwirlUI_Frame")
+
+    _G["SwirlUI_Frame"] = frame.frame
+    table.insert(UISpecialFrames, "SwirlUI_Frame")
 
     local statusGroup = AceGUI:Create("InlineGroup")
     statusGroup:SetTitle("Profile Status")
@@ -93,10 +83,6 @@ local function CreateImportGUI()
     importGroup:SetFullWidth(true)
     importGroup:SetLayout("Flow")
     frame:AddChild(importGroup)
-
-    local function GetAddonStatusColor(addonName, database)
-        return SwirlUI.Utils:GetAddonStatusColor(addonName, database)
-    end
 
     local importAllBtn = AceGUI:Create("Button")
     importAllBtn:SetText("Import All")
@@ -150,24 +136,20 @@ local function CreateImportGUI()
 
     function UpdateImportButtons()
         for _, btnData in ipairs(importButtons) do
-            local color = GetAddonStatusColor(btnData.profile.name, btnData.profile.database)
+            local color = SwirlUI.Utils:GetAddonStatusColor(btnData.profile)
             btnData.button:SetText(SwirlUI.ApplyColor(btnData.profile.name, color))
         end
-    end
-
-    local function GetAddonStatusText(addonInfo)
-        return SwirlUI.Utils:GetAddonStatusText(addonInfo)
     end
 
     function UpdateStatusDisplay()
         local statusLines = {}
         
         for _, profile in ipairs(SwirlUI.ImportProfiles) do
-            table.insert(statusLines, GetAddonStatusText(profile))
+            table.insert(statusLines, SwirlUI.Utils:GetAddonStatusText(profile))
         end
         
         for _, addon in ipairs(SwirlUI.ApplyAddons) do
-            table.insert(statusLines, GetAddonStatusText(addon))
+            table.insert(statusLines, SwirlUI.Utils:GetAddonStatusText(addon))
         end
         
         statusText:SetText(table.concat(statusLines, "\n"))
@@ -197,18 +179,8 @@ local function CreateExportGUI()
         widget:Hide()
     end)
     
-    local frameWidget = frame.frame
-    frameWidget:SetScript("OnKeyDown", function(self, key)
-        if key == "ESCAPE" then
-            frame:Hide()
-            return
-        else
-            self:SetPropagateKeyboardInput(true)
-        end
-    end)
-    frameWidget:EnableKeyboard(true)
-    
-    table.insert(UISpecialFrames, frameWidget:GetName() or "SwirlUI_Export_Frame")
+    _G["SwirlUI_Export_Frame"] = frame.frame
+    table.insert(UISpecialFrames, "SwirlUI_Export_Frame")
 
     local scroll = AceGUI:Create("ScrollFrame")
     scroll:SetLayout("Flow")
