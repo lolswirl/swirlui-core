@@ -26,4 +26,4 @@ end
 
 -- profiles
 SwirlUI.Profile = "swirl ui"
-SwirlUI.ProfilesImported = false
+SwirlUI.SettingsChanged = false

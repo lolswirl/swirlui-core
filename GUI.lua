@@ -40,14 +40,14 @@ local function CreateImportGUI()
     local frame = AceGUI:Create("Frame")
     frame:SetTitle(SwirlUI.HeaderNoColon)
     frame:SetWidth(400)
-    frame:SetHeight(450)
+    frame:SetHeight(600)
     frame:SetLayout("Flow")
     frame:SetStatusText(string.format("%s Profile Manager", SwirlUI.HeaderNoColon))
     
     frame:SetCallback("OnClose", function(widget)
         widget:Hide()
-        if SwirlUI.ProfilesImported then
-            SwirlUI.ProfilesImported = false
+        if SwirlUI.SettingsChanged then
+            SwirlUI.SettingsChanged = false
             SwirlUI:ReloadDialog()
         end
     end)
@@ -111,6 +111,38 @@ local function CreateImportGUI()
         end)
         importGroup:AddChild(btn)
         table.insert(importButtons, {button = btn, profile = profile})
+    end
+
+    local uiScaleGroup = AceGUI:Create("InlineGroup")
+    uiScaleGroup:SetTitle("UI Scale")
+    uiScaleGroup:SetFullWidth(true)
+    uiScaleGroup:SetLayout("Flow")
+    frame:AddChild(uiScaleGroup)
+
+    local uiScale = AceGUI:Create("Slider")
+    uiScale:SetLabel("UI Scale")
+    uiScale:SetRelativeWidth(1)
+    uiScale:SetSliderValues(0.1, 2, 0.01)
+    uiScale:SetValue(tonumber(GetCVar("UIScale")))
+    uiScale:SetCallback("OnValueChanged", function(widget, event, value)
+        UIParent:SetScale(value)
+        uiScale:SetValue(value)
+        SwirlUI.SettingsChanged = true
+    end)
+    uiScaleGroup:AddChild(uiScale)
+
+    local presets = {0.53, 0.63, 0.71, 1}
+    for _, scale in ipairs(presets) do
+        local scaleBtn = AceGUI:Create("Button")
+        scaleBtn:SetText(tostring(scale))
+        scaleBtn:SetRelativeWidth(0.25)
+        scaleBtn:SetCallback("OnClick", function()
+            SetCVar("UIScale", scale)
+            UIParent:SetScale(scale)
+            uiScale:SetValue(scale)
+            SwirlUI.SettingsChanged = true
+        end)
+        uiScaleGroup:AddChild(scaleBtn)
     end
 
     local helpGroup = AceGUI:Create("InlineGroup")

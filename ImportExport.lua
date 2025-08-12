@@ -37,7 +37,7 @@ function SwirlUI.Imports:ImportAll()
     print(string.format("%s Import complete! (%d/%d successful)", SwirlUI.Header, successCount, totalCount))
 
     if successCount > 0 then
-        SwirlUI.ProfilesImported = true
+        SwirlUI.SettingsChanged = true
         print(string.format("%s Type /reload to apply all changes", SwirlUI.Header))
     end
 end
@@ -118,7 +118,7 @@ function SwirlUI.Imports:ImportMinimapStats()
         return false
     end
     importProfile.database.global = importProfile.data
-    SwirlUI.ProfilesImported = true
+    SwirlUI.SettingsChanged = true
     print(string.format("%s Imported %s", SwirlUI.Header, SwirlUI.ApplyColor(importProfile.name, importProfile.color)))
 
 end

@@ -219,7 +219,7 @@ function SwirlUI.Utils:Import(addonName)
         db.profileKeys[characterProfile] = SwirlUI.Profile
     end
 
-    SwirlUI.ProfilesImported = true
+    SwirlUI.SettingsChanged = true
     print(string.format("%s Imported %s", SwirlUI.Header, SwirlUI.ApplyColor(importProfile.name, importProfile.color)))
 
     return db
