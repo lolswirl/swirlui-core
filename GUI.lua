@@ -20,8 +20,16 @@ function SwirlUI.ShowImportGUI_AF()
         return
     end
 
+    local allProfiles = SwirlUI.Utils:GetAllProfiles()
+    local statusListHeight = (#allProfiles + 1) * 22
+    local applyProfilesHeight = 24
+    local titlePaneHeight = 24
+    local scrollListTitleHeight = 24
+    local statusGroupHeight = statusListHeight + applyProfilesHeight + titlePaneHeight + scrollListTitleHeight
+    local totalFrameHeight = statusGroupHeight + 200
+
     local frame = AF.CreateHeaderedFrame(AF.UIParent, "SWIRLUI_AF_FRAME",
-        SwirlUI.HeaderNoColon, 440, 450)
+        SwirlUI.HeaderNoColon, 440, totalFrameHeight)
     AF.SetPoint(frame, "CENTER", UIParent, "CENTER", 0, 0)
     frame:SetTitleColor("white")
     frame:SetFrameLevel(100)
@@ -37,20 +45,20 @@ function SwirlUI.ShowImportGUI_AF()
     _G["SwirlUI_AF_Frame"] = frame
     table.insert(UISpecialFrames, "SwirlUI_AF_Frame")
 
-    local statusGroup = AF.CreateTitledPane(frame, "Profile Status", 430, 200)
+    local statusGroup = AF.CreateTitledPane(frame, "Profile Status", 430, statusGroupHeight)
     AF.SetPoint(statusGroup, "TOPLEFT", frame, "TOPLEFT", 5, -5)
 
     local statusScrollLists = {}
 
     local applyBtn = AF.CreateButton(statusGroup, "Apply Profiles", "accent_hover", 430, 24)
-    AF.SetPoint(applyBtn, "BOTTOMLEFT", statusGroup, "BOTTOMLEFT", 0, -45)
+    AF.SetPoint(applyBtn, "BOTTOM", statusGroup, "BOTTOM", 0, 0)
     applyBtn:SetOnClick(function()
         SwirlUI.Imports:ApplyProfiles()
         SwirlUI.UpdateStatusDisplay_AF()
     end)
 
     local uiScaleGroup = AF.CreateTitledPane(frame, "UI Scale", 430, 100)
-    AF.SetPoint(uiScaleGroup, "TOPLEFT", statusGroup, "BOTTOMLEFT", 0, -55)
+    AF.SetPoint(uiScaleGroup, "TOPLEFT", statusGroup, "BOTTOMLEFT", 0, -10)
 
     local uiScaleSlider = AF.CreateSlider(uiScaleGroup, "UI Scale", 430, 0.1, 2, 0.01, false, true)
     AF.SetPoint(uiScaleSlider, "TOPLEFT", uiScaleGroup, "TOPLEFT", 0, -42)
@@ -123,7 +131,7 @@ function SwirlUI.ShowImportGUI_AF()
         local listCount = #newStatusList
         local spacing = 10
         local columnWidth = math.floor((totalWidth - (listCount - 1) * spacing) / listCount)
-        local listHeight = (#newAllProfiles + 1) * 22
+        local listHeight = (#newAllProfiles + 1) * 22 + 2
 
         for i, status in ipairs(newStatusList) do
             local profiles = newStatusGroups[status]
@@ -144,7 +152,7 @@ function SwirlUI.ShowImportGUI_AF()
                 end
             end
             
-            local scrollList = AF.CreateScrollList(statusGroup, nil, 5, 5, 7, 22, 2, "background2", color)
+            local scrollList = AF.CreateScrollList(statusGroup, nil, 5, 5, #newAllProfiles, 22, 2, "background2", color)
             AF.SetPoint(scrollList, "TOPLEFT", statusGroup, "TOPLEFT", xOffset, -40)
             AF.SetSize(scrollList, columnWidth, listHeight)
             scrollList:SetLabel(status, color)
@@ -189,6 +197,7 @@ function SwirlUI.ShowImportGUI_AF()
     end
 
     function SwirlUI.UpdateStatusDisplay_AF()
+        
         SwirlUI.CreateStatusDisplay_AF()
     end
 
@@ -251,6 +260,51 @@ function SwirlUI:ReloadDialog(frame)
         C_UI.Reload()
     end, function()
     end)
+end
+
+
+function SwirlUI.CreateStatusDialog(title, content, editBoxContent)
+    local width, height = 400, 25
+    if editBoxContent then height = height + 40 end
+    if content then height = height + 30 end
+    local frame = AF.CreateHeaderedFrame(AF.UIParent, nil, title, width, height)
+    AF.SetPoint(frame, "CENTER", UIParent, "CENTER", 0, 0)
+    frame:SetFrameLevel(200)
+    frame:SetTitleColor("white")
+    frame:SetTitleJustify("CENTER")
+    frame:SetMovable(false)
+    frame:SetResizable(false)
+    frame:SetScript("OnHide", function()
+        frame:Hide()
+    end)
+    frame:Show()
+
+    local yOffset = -5
+    if content then
+        local contentText = AF.CreateFontString(frame, content, "white", "AF_FONT_NORMAL")
+        AF.SetPoint(contentText, "TOPLEFT", frame, "TOPLEFT", 5, yOffset)
+        yOffset = yOffset - 30
+    end
+
+    local editBox
+    if editBoxContent then
+        editBox = AF.CreateEditBox(frame, nil, width - 10, 24)
+        AF.SetPoint(editBox, "TOPLEFT", frame, "TOPLEFT", 5, yOffset)
+        editBox:SetText(editBoxContent)
+        editBox:SetNotUserChangable(true)
+        editBox:SetCursorPosition(0)
+        editBox:HighlightText()
+        editBox:SetFocus()
+        yOffset = yOffset - 40
+    end
+
+    local okBtn = AF.CreateButton(frame, "OK", "accent_hover", 80, 24)
+    AF.SetPoint(okBtn, "BOTTOM", frame, "BOTTOM", 0, 5)
+    okBtn:SetOnClick(function()
+        frame:Hide()
+    end)
+    
+    return frame
 end
 
 SLASH_SWIRLUI1 = "/swirlui"
