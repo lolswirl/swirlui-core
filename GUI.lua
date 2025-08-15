@@ -176,7 +176,7 @@ function SwirlUI.ShowImportGUI_AF()
                     btn:SetOnClick(function()
                         local importFunction = string.format("Import%s", profile.short or profile.name)
                         if SwirlUI.Imports[importFunction] then
-                            SwirlUI.Imports[importFunction](SwirlUI.Imports)
+                            SwirlUI.Imports[importFunction](SwirlUI.Imports, true)
                             SwirlUI.UpdateStatusDisplay_AF()
                         end
                     end)

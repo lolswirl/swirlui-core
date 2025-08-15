@@ -1,5 +1,5 @@
 local _, SwirlUI = ...
-
+local AF = _G.AbstractFramework
 local Serialize = LibStub:GetLibrary("AceSerializer-3.0")
 local Compress = LibStub:GetLibrary("LibDeflate")
 
@@ -200,7 +200,7 @@ function SwirlUI.Utils:Export(data, addon, isNamespace)
     return true
 end
 
-function SwirlUI.Utils:Import(addonName)
+function SwirlUI.Utils:Import(addonName, notification)
     local importProfile = SwirlUI.Utils:GetImportProfile(addonName)
     if not importProfile or not SwirlUI.Utils:CheckAddOnLoaded(importProfile) then
         return false
@@ -238,7 +238,11 @@ function SwirlUI.Utils:Import(addonName)
     end
 
     SwirlUI.SettingsChanged = true
-    print(string.format("%s Imported %s", SwirlUI.Header, SwirlUI.ApplyColor(importProfile.name, importProfile.color)))
+    if notification then
+        AF.ShowNotificationPopup(string.format("%s\n Imported %s", SwirlUI.NameNoCore, SwirlUI.ApplyColor(importProfile.name, importProfile.color)), 2)
+    else
+        print(string.format("%s Imported %s", SwirlUI.Header, SwirlUI.ApplyColor(importProfile.name, importProfile.color)))
+    end
 
     self:StoreProfileVersion(importProfile)
 

@@ -367,7 +367,7 @@ function SwirlUI:Initialize()
     -- setting default popup location instead of asking user
     if AFConfig then
         AFConfig["popups"] = {
-            ["orientation"] = "bottom_to_top",
+            ["orientation"] = "top_to_bottom",
             ["position"] = {
                 "TOP",
                 0,
