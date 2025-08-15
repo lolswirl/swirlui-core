@@ -116,6 +116,17 @@ function SwirlUI.Imports:ExportBasicMinimap()
     return SwirlUI.Utils:Export(data, basicMinimap)
 end
 
+function SwirlUI.Imports:ImportVocalRaidAssistant()
+    return SwirlUI.Utils:Import("VocalRaidAssistant")
+end
+
+function SwirlUI.Imports:ExportVocalRaidAssistant()
+    local vocalRaidAssistant = SwirlUI.Utils:GetImportProfile("VocalRaidAssistant")
+    -- no idea why i can't call vocalRaidAssistant.database when its defined in Strings.lua
+    local data = VocalRaidAssistantDB["profiles"][SwirlUI.Profile]
+    return SwirlUI.Utils:Export(data, vocalRaidAssistant)
+end
+
 function SwirlUI.Imports:ImportMinimapStats()
     local importProfile = SwirlUI.Utils:GetImportProfile("MinimapStats")
     if not importProfile or not SwirlUI.Utils:CheckAddOnLoaded(importProfile) then
@@ -132,7 +143,6 @@ function SwirlUI.Imports:ExportMinimapStats()
     local data = minimapStats.database.global
     return SwirlUI.Utils:Export(data, minimapStats)
 end
-
 
 function SwirlUI.Imports:GetAddonStatus(addonName, database)
     if not IsAddOnLoaded(addonName) then

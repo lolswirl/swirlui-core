@@ -38,7 +38,14 @@ SwirlUI.ImportProfiles = {
         },
         database = MSDB,
         color = "8080ff",
-    }
+    },
+    {
+        name = "VocalRaidAssistant",
+        version = "1.0",
+        string = "TBztVXTnqy4)sCg(XqESSjbOhIp0nihvG0A1Ul6gTl0kNI8VVKZWpKJDoeGE0WWWY8ZHVZ78qoadFA4W3MxVF(6YWdUHd3V(0YJ5g5pUnE8Fgo85)83(Y7F4lVF98XHdBNwVUTDzE4b1WHJNgxwMVmC4JJ33Mxh2go83ZlZRJxYlX)oUD80hUUYl8xpVC(RJ3YTF68JZdX8GhxNhZTCBCD775pMxgNUm)yQ3YN)(P5XT3L(909EJFA8PLT7dtPO828Ll3ZZ0P15bOjdIu(l0J28q0oDaC5wiJk3aOqm)VgvQlGBbCEti)LhmYYO9bUlnIa4Lbz1GSabIqUxRp4n5pWGpWteqtGm8(RiDiWlgQjB(dVsB18WviO5O0fsbv6VwR2GsxukyKfWOsBDosbJZXdZHUs0O8OxvIlG4ZxAJD8jlTuOXw6ur8eYcJf4TsxIzG8AEp1ETcKWhaI4rP9qQrUTGsdS6OH06kn5ij0Gq6ivIJsGfcoE99eRroJ3Wh6GxP4H4cLPsbPbuf4zK0elVwwqzLtskMdKS3EuchLZllqo3OcsBiv0FLp4erZtksYnGJ1Nu6oPYIyKexFXVugF(yQ5X5G8h54bdKTyzkPhaQjfWtolNual6DsglLw5orDavL4b9IGQrLR52yPXOCKgLz6kAtzBCG4)G06yLinfFENmMGQ1jX2iY7yl2wTe5pws1JRpDJltsTE)yQ91Zx5s7wrtXcSpG5YMNNIBcoNNAsBCxEs8LX9gism2f3ttwLSf(d5pXfffxuCx2wuTO4MI1usSARITCdpxUcnwvOOiNXQ1RMokBexZltlxJeR(Vyv(ZYPaPwgFt3(L1T1XZp(Qm9N5nFbs)6YLVFy(YFLh)pdVp1X7v565AZ0(avG5XgmpUVYRaZ512wQRA0CTpjaYTjDAoPCUcvGtWma17arEd10xT0ebBWxq7n2HWRM2P4sMlVwwciEnA88m0raJAJrRLtxfSVdJtwlvqmVcgVIumiySIf4fW7er2YYBbEBiBHj2TnjufVVu(wj5m3D5tdDkEbENLBI88yEPXVzXW0H1lJUsU7gZc6oU322r3nZENC3QctPbOalRxJ1V7uNsnYBdAOE0ztyCEM17nqvkTvSFQGCrSu3ZIUYQjjvkzbWl3V2VqPJUlxAWbr9EYukvHz5NRAU9TBVXA(LznlxxM)FJ10ROQqMNRyt7kMEj3PzB(zpiQz1AVmQ)0Y2BKEve0puF1zsT6R9WPMK3Xu1e1UkSQc3bxnxBR(QdU6fyncwN01qy9hO0FLAd10QC29UYgYR)(wXApv9Vt96RgrRCNWUAQguSZ3f40w7NH)7p",
+        database = VocalRaidAssistantDB,
+        color = "4452aa",
+    },
 }
 
 SwirlUI.ApplyAddons = {

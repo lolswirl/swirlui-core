@@ -13,9 +13,13 @@ function SwirlUI.Utils:HasProfile(addon, silent)
         return false
     end
 
-    -- minimapstats doesn't have profiles lol
+
     if addon.name == "MinimapStats" then
+        -- minimapstats doesn't have profiles lol
         return true
+    elseif addon.name == "VocalRaidAssistant" then
+        -- vocal raid assistant doesn't work without this lol
+        addon.database = VocalRaidAssistantDB
     end
     
     if not addon.database or not addon.database["profiles"] or not addon.database["profiles"][SwirlUI.Profile] then
@@ -204,7 +208,13 @@ function SwirlUI.Utils:Import(addonName)
 
     local data = SwirlUI.Utils:Decode(importProfile.string)
 
-    local db = importProfile.database
+    local db
+    if importProfile.name == "VocalRaidAssistant" then
+        -- why can't i just importProfile.database on this!!!!
+        db = VocalRaidAssistantDB
+    else
+        db = importProfile.database
+    end
 
     db.profiles = db.profiles or {}
     db.profileKeys = db.profileKeys or {}
