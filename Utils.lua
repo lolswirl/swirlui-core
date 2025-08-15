@@ -59,18 +59,22 @@ end
 
 function SwirlUI.Utils:GetAddonStatus(addon)
     if not IsAddOnLoaded(addon.name) then
-        return "AddOn Disabled", SwirlUI.Hostile
+        return SwirlUI.STATUS.ADDON_DISABLED, SwirlUI.Hostile
     end
 
     if not self:HasProfile(addon, true) then
-        return "No Profile! Import below", SwirlUI.Hostile
+        return SwirlUI.STATUS.NO_PROFILE, SwirlUI.Hostile
+    end
+
+    if self:IsProfileVersionChanged(addon) then
+        return SwirlUI.STATUS.NEW_VERSION_AVAILABLE, SwirlUI.Hostile
     end
 
     if self:IsProfileApplied(addon) then
-        return "Active", SwirlUI.Friendly
+        return SwirlUI.STATUS.ACTIVE, SwirlUI.Friendly
     end
 
-    return "Ready", SwirlUI.Neutral
+    return SwirlUI.STATUS.READY, SwirlUI.Neutral
 end
 
 function SwirlUI.Utils:GetAddonStatusColor(addon)
@@ -100,6 +104,8 @@ function SwirlUI.Utils:ApplyProfile(profile)
 
         SwirlUI.Imports:ImportMinimapStats()
         print(string.format("%s Applied %s profile", SwirlUI.Header, SwirlUI.ApplyColor(profile.name, profile.color)))
+        
+        self:StoreProfileVersion(profile)
         return true
     end
 
@@ -120,6 +126,8 @@ function SwirlUI.Utils:ApplyProfile(profile)
         profile.database["profileKeys"][profileKey] = SwirlUI.Profile
         print(string.format("%s Applied %s profile", SwirlUI.Header, SwirlUI.ApplyColor(profile.name, profile.color)))
     end
+
+    self:StoreProfileVersion(profile)
     return true
 end
 
@@ -222,5 +230,37 @@ function SwirlUI.Utils:Import(addonName)
     SwirlUI.SettingsChanged = true
     print(string.format("%s Imported %s", SwirlUI.Header, SwirlUI.ApplyColor(importProfile.name, importProfile.color)))
 
+    self:StoreProfileVersion(importProfile)
+
     return db
+end
+
+function SwirlUI.Utils:GetStoredProfileVersion(profile)
+    if not SwirlUIDB or not SwirlUIDB.profileVersions then
+        return nil
+    end
+    return SwirlUIDB.profileVersions[profile.name]
+end
+
+function SwirlUI.Utils:StoreProfileVersion(profile)
+    if not SwirlUIDB then
+        SwirlUIDB = { profileVersions = {} }
+    end
+    if not SwirlUIDB.profileVersions then
+        SwirlUIDB.profileVersions = {}
+    end
+
+    SwirlUIDB.profileVersions[profile.name] = profile.version
+end
+
+function SwirlUI.Utils:IsProfileVersionChanged(profile)
+    if not profile.version then return end
+
+    local storedVersion = self:GetStoredProfileVersion(profile)
+
+    if not storedVersion then
+        return true
+    end
+    
+    return profile.version ~= storedVersion
 end

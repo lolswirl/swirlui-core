@@ -6,7 +6,7 @@
 ## Group: SwirlUI
 ## Version: 1.0.0
 ## SavedVariables: SwirlUIDB
-## Dependencies: SharedMedia_SwirlUI
+## Dependencies: SharedMedia_SwirlUI, AbstractFramework
 ## X-Wago-ID: jK8XP0Ky
 
 ## Category: User Interface
