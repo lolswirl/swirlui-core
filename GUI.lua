@@ -1,5 +1,5 @@
-local AF = _G.AbstractFramework
 local _, SwirlUI = ...
+local AF = _G.AbstractFramework
 
 local _, UNIT_CLASS = UnitClass("player")
 
