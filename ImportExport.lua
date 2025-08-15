@@ -48,14 +48,12 @@ function SwirlUI.Imports:ApplyProfiles()
         return false
     end
 
-    print(string.format("%s Applying all profiles...", SwirlUI.Header))
-
     local steps = {}
     local stepIndex = 0
     local allProfiles = SwirlUI.Utils:GetAllProfiles()
     
     for _, profile in ipairs(allProfiles) do
-        if SwirlUI.Utils:IsProfileApplied(profile) then
+        if not SwirlUI.Utils:IsProfileApplied(profile) then
             stepIndex = stepIndex + 1
             table.insert(steps, function()
                 SwirlUI.Utils:ApplyProfile(profile)
@@ -63,8 +61,14 @@ function SwirlUI.Imports:ApplyProfiles()
         end
     end
 
-    for index, step in ipairs(steps) do
-        C_Timer.After(index * 0.5, step)
+    if (#steps > 0) then
+        print(string.format("%s Applying all profiles...", SwirlUI.Header))
+        for index, step in ipairs(steps) do
+            C_Timer.After(index * 0.5, step)
+        end
+    else
+        print(string.format("%s All profiles are already applied", SwirlUI.Header))
+        return false
     end
 
     C_Timer.After((#steps + 1) * 0.5, function()
@@ -120,7 +124,7 @@ function SwirlUI.Imports:ImportMinimapStats()
     importProfile.database.global = importProfile.data
     SwirlUI.SettingsChanged = true
     print(string.format("%s Imported %s", SwirlUI.Header, SwirlUI.ApplyColor(importProfile.name, importProfile.color)))
-
+    SwirlUI.Utils:StoreProfileVersion(importProfile)
 end
 
 function SwirlUI.Imports:ExportMinimapStats()
@@ -132,11 +136,11 @@ end
 
 function SwirlUI.Imports:GetAddonStatus(addonName, database)
     if not IsAddOnLoaded(addonName) then
-        return "Disabled", SwirlUI.Hostile
+        return SwirlUI.STATUS.DISABLED, SwirlUI.Hostile
     elseif SwirlUI.Utils:HasProfile(addonName, database, true) then
-        return "Active", SwirlUI.Friendly
+        return SwirlUI.STATUS.ACTIVE, SwirlUI.Friendly
     else
-        return "Ready", SwirlUI.Neutral
+        return SwirlUI.STATUS.READY, SwirlUI.Neutral
     end
 end
 

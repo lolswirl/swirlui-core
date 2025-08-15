@@ -339,8 +339,34 @@ local function BlizzardSetups()
     SetupFrameAlphas()
 end
 
+local function CheckProfileVersionUpdates()
+    for _, profile in ipairs(SwirlUI.ImportProfiles) do
+        if (profile.string or profile.data) and IsAddOnLoaded(profile.name) then
+            local currentVersion = profile.version
+            local storedVersion = SwirlUIDB.profileVersions[profile.name]
+            
+            if storedVersion and storedVersion ~= currentVersion then
+                local addonColor = SwirlUI.ApplyColor(profile.name, profile.color)
+                local versionColor = SwirlUI.ApplyColor(currentVersion, "00ff96")
+                print(string.format("%s Update available for %s to v%s", SwirlUI.Header, addonColor, versionColor))
+            end
+        end
+    end
+end
+
 function SwirlUI:Initialize()
+    if not SwirlUIDB then
+        SwirlUIDB = {
+            profileVersions = {}
+        }
+    end
+    if not SwirlUIDB.profileVersions then
+        SwirlUIDB.profileVersions = {}
+    end
+
     BlizzardSetups()
     AddOnSetups()
     MinimapData()
+    
+    CheckProfileVersionUpdates()
 end

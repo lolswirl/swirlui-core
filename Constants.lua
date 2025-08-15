@@ -27,3 +27,29 @@ end
 -- profiles
 SwirlUI.Profile = "swirl ui"
 SwirlUI.SettingsChanged = false
+
+-- status
+SwirlUI.STATUS = {
+    ADDON_DISABLED = "AddOn Disabled",
+    NO_PROFILE = "No Profile! Import below",
+    NEW_VERSION_AVAILABLE = "New Version Available",
+    ACTIVE = "Active",
+    READY = "Ready",
+    DISABLED = "Disabled"
+}
+
+SwirlUI.STATUS_ORDER = {
+    [SwirlUI.STATUS.ACTIVE] = 1,
+    [SwirlUI.STATUS.READY] = 2,
+    [SwirlUI.STATUS.NEW_VERSION_AVAILABLE] = 3,
+    [SwirlUI.STATUS.ADDON_DISABLED] = 4,
+    [SwirlUI.STATUS.NO_PROFILE] = 5
+}
+
+SwirlUI.STATUS_TOOLTIPS = {
+    [SwirlUI.STATUS.ACTIVE] = "Click to reimport profile",
+    [SwirlUI.STATUS.READY] = "Click to apply profile",
+    [SwirlUI.STATUS.NO_PROFILE] = "Click to import profile",
+    [SwirlUI.STATUS.NEW_VERSION_AVAILABLE] = "Click to reimport profile (new version detected)",
+    [SwirlUI.STATUS.ADDON_DISABLED] = "Enable addon to import profile"
+}
