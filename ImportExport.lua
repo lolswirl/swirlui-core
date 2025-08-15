@@ -22,7 +22,7 @@ function SwirlUI.Imports:ImportAll()
     for _, profile in ipairs(SwirlUI.ImportProfiles) do
         if C_AddOns.IsAddOnLoaded(profile.name) then
             local importFunction = string.format("Import%s", profile.short or profile.name)
-            local success = self[importFunction] and self[importFunction](self)
+            local success = self[importFunction] and self[importFunction](self, false)
             if success then
                 successCount = successCount + 1
             else
@@ -61,12 +61,12 @@ function SwirlUI.Imports:ApplyProfiles()
     end
 
     if (#steps > 0) then
-        AF.ShowNotificationPopup(string.format("%s\n Applying all profiles...", SwirlUI.HeaderNoColon), 2)
+        AF.ShowNotificationPopup(string.format("%s\n Applying all profiles...", SwirlUI.NameNoCore), 2)
         for index, step in ipairs(steps) do
             C_Timer.After(index * 0.5, step)
         end
     else
-        AF.ShowNotificationPopup(string.format("%s\n All profiles are already applied", SwirlUI.HeaderNoColon), 2)
+        AF.ShowNotificationPopup(string.format("%s\n All profiles are already applied", SwirlUI.NameNoCore), 2)
         return false
     end
 
@@ -77,8 +77,8 @@ function SwirlUI.Imports:ApplyProfiles()
     return true
 end
 
-function SwirlUI.Imports:ImportBufflehead()
-    local db = SwirlUI.Utils:Import("Bufflehead")
+function SwirlUI.Imports:ImportBufflehead(notification)
+    local db = SwirlUI.Utils:Import("Bufflehead", notification)
     db["global"]["hideOmniCC"] = false
     return true
 end
@@ -89,8 +89,8 @@ function SwirlUI.Imports:ExportBufflehead()
     return SwirlUI.Utils:Export(data, bufflehead)
 end
 
-function SwirlUI.Imports:ImportPrat()
-    return SwirlUI.Utils:Import("Prat-3.0")
+function SwirlUI.Imports:ImportPrat(notification)
+    return SwirlUI.Utils:Import("Prat-3.0", notification)
 end
 
 function SwirlUI.Imports:ExportPrat()
@@ -105,8 +105,8 @@ function SwirlUI.Imports:ExportPrat()
     return true
 end
 
-function SwirlUI.Imports:ImportBasicMinimap()
-    return SwirlUI.Utils:Import("BasicMinimap")
+function SwirlUI.Imports:ImportBasicMinimap(notification)
+    return SwirlUI.Utils:Import("BasicMinimap", notification)
 end
 
 function SwirlUI.Imports:ExportBasicMinimap()
@@ -115,8 +115,8 @@ function SwirlUI.Imports:ExportBasicMinimap()
     return SwirlUI.Utils:Export(data, basicMinimap)
 end
 
-function SwirlUI.Imports:ImportVocalRaidAssistant()
-    return SwirlUI.Utils:Import("VocalRaidAssistant")
+function SwirlUI.Imports:ImportVocalRaidAssistant(notification)
+    return SwirlUI.Utils:Import("VocalRaidAssistant", notification)
 end
 
 function SwirlUI.Imports:ExportVocalRaidAssistant()
@@ -126,14 +126,28 @@ function SwirlUI.Imports:ExportVocalRaidAssistant()
     return SwirlUI.Utils:Export(data, vocalRaidAssistant)
 end
 
-function SwirlUI.Imports:ImportMinimapStats()
+function SwirlUI.Imports:ImportMasque(notification)
+    return SwirlUI.Utils:Import("Masque", notification)
+end
+
+function SwirlUI.Imports:ExportMasque()
+    local masque = SwirlUI.Utils:GetImportProfile("Masque")
+    local data = masque.database["profiles"][SwirlUI.Profile]
+    return SwirlUI.Utils:Export(data, masque)
+end
+
+function SwirlUI.Imports:ImportMinimapStats(notification)
     local importProfile = SwirlUI.Utils:GetImportProfile("MinimapStats")
     if not importProfile or not SwirlUI.Utils:CheckAddOnLoaded(importProfile) then
         return false
     end
     importProfile.database.global = importProfile.data
     SwirlUI.SettingsChanged = true
-    print(string.format("%s Imported %s", SwirlUI.Header, SwirlUI.ApplyColor(importProfile.name, importProfile.color)))
+    if notification then
+        AF.ShowNotificationPopup(string.format("%s\n Imported %s", SwirlUI.NameNoCore, SwirlUI.ApplyColor(importProfile.name, importProfile.color)), 2)
+    else
+        print(string.format("%s Imported %s", SwirlUI.Header, SwirlUI.ApplyColor(importProfile.name, importProfile.color)))
+    end
     SwirlUI.Utils:StoreProfileVersion(importProfile)
 end
 
