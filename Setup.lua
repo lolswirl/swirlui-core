@@ -364,6 +364,18 @@ function SwirlUI:Initialize()
         SwirlUIDB.profileVersions = {}
     end
 
+    -- setting default popup location instead of asking user
+    if AFConfig then
+        AFConfig["popups"] = {
+            ["orientation"] = "bottom_to_top",
+            ["position"] = {
+                "TOP",
+                0,
+                -100,
+            },
+        }
+    end
+
     BlizzardSetups()
     AddOnSetups()
     MinimapData()

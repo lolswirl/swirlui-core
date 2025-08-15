@@ -1,6 +1,5 @@
 local _, SwirlUI = ...
-
-IsAddOnLoaded = C_AddOns.IsAddOnLoaded
+local AF = _G.AbstractFramework
 
 SwirlUI.Imports = {}
 
@@ -21,7 +20,7 @@ function SwirlUI.Imports:ImportAll()
     local totalCount = #SwirlUI.ImportProfiles
     
     for _, profile in ipairs(SwirlUI.ImportProfiles) do
-        if IsAddOnLoaded(profile.name) then
+        if C_AddOns.IsAddOnLoaded(profile.name) then
             local importFunction = string.format("Import%s", profile.short or profile.name)
             local success = self[importFunction] and self[importFunction](self)
             if success then
@@ -62,12 +61,12 @@ function SwirlUI.Imports:ApplyProfiles()
     end
 
     if (#steps > 0) then
-        print(string.format("%s Applying all profiles...", SwirlUI.Header))
+        AF.ShowNotificationPopup(string.format("%s\n Applying all profiles...", SwirlUI.HeaderNoColon), 2)
         for index, step in ipairs(steps) do
             C_Timer.After(index * 0.5, step)
         end
     else
-        print(string.format("%s All profiles are already applied", SwirlUI.Header))
+        AF.ShowNotificationPopup(string.format("%s\n All profiles are already applied", SwirlUI.HeaderNoColon), 2)
         return false
     end
 
@@ -145,7 +144,7 @@ function SwirlUI.Imports:ExportMinimapStats()
 end
 
 function SwirlUI.Imports:GetAddonStatus(addonName, database)
-    if not IsAddOnLoaded(addonName) then
+    if not C_AddOns.IsAddOnLoaded(addonName) then
         return SwirlUI.STATUS.DISABLED, SwirlUI.Hostile
     elseif SwirlUI.Utils:HasProfile(addonName, database, true) then
         return SwirlUI.STATUS.ACTIVE, SwirlUI.Friendly
@@ -159,7 +158,7 @@ function SwirlUI.Imports:GetProfileStatus()
     local allProfiles = SwirlUI.Utils:GetAllProfiles()
     
     for _, profile in ipairs(allProfiles) do
-        local addonLoaded = IsAddOnLoaded(profile.name)
+        local addonLoaded = C_AddOns.IsAddOnLoaded(profile.name)
         local hasDB = addonLoaded and profile.database ~= nil
         local hasProfile = SwirlUI.Utils:HasProfile(profile, true)
 
