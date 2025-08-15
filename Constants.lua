@@ -26,6 +26,7 @@ end
 
 -- profiles
 SwirlUI.Profile = "swirl ui"
+SwirlUI.ProfileTenEightyP = "swirl ui 1080p"
 SwirlUI.SettingsChanged = false
 
 -- status

@@ -13,7 +13,6 @@ function SwirlUI.Utils:HasProfile(addon, silent)
         return false
     end
 
-
     if addon.name == "MinimapStats" then
         -- minimapstats doesn't have profiles lol
         return true
@@ -22,7 +21,8 @@ function SwirlUI.Utils:HasProfile(addon, silent)
         addon.database = VocalRaidAssistantDB
     end
     
-    if not addon.database or not addon.database["profiles"] or not addon.database["profiles"][SwirlUI.Profile] then
+    if not addon.database or not addon.database["profiles"] or 
+       (not addon.database["profiles"][SwirlUI.Profile] and not addon.database["profiles"][SwirlUI.ProfileTenEightyP]) then
         if not silent then
             print(string.format("%s No profile found for %s", SwirlUI.Header, addon.name))
         end
@@ -58,7 +58,7 @@ function SwirlUI.Utils:IsProfileApplied(addon)
 
     local profileKey = string.format("%s - %s", UnitName("player"), GetRealmName())
     local activeProfile = addon.database["profileKeys"] and addon.database["profileKeys"][profileKey]
-    return activeProfile == SwirlUI.Profile
+    return activeProfile == SwirlUI.Profile or activeProfile == SwirlUI.ProfileTenEightyP
 end
 
 function SwirlUI.Utils:GetAddonStatus(addon)
@@ -113,7 +113,8 @@ function SwirlUI.Utils:ApplyProfile(profile)
         return true
     end
 
-    if not profile.database or not profile.database["profiles"] or not profile.database["profiles"][SwirlUI.Profile] then
+    if not profile.database or not profile.database["profiles"] or 
+       (not profile.database["profiles"][SwirlUI.Profile] and not profile.database["profiles"][SwirlUI.ProfileTenEightyP]) then
         print(string.format("%s No profile found for %s", SwirlUI.Header, SwirlUI.ApplyColor(profile.name, profile.color)))
         return false
     end
@@ -121,7 +122,7 @@ function SwirlUI.Utils:ApplyProfile(profile)
     local profileKey = string.format("%s - %s", UnitName("player"), GetRealmName())
     local activeProfile = profile.database["profileKeys"] and profile.database["profileKeys"][profileKey]
 
-    if activeProfile == SwirlUI.Profile then
+    if activeProfile == SwirlUI.Profile or activeProfile == SwirlUI.ProfileTenEightyP then
         print(string.format("%s %s profile is already applied", SwirlUI.Header, SwirlUI.ApplyColor(profile.name, profile.color)))
     else
         if not profile.database["profileKeys"] then
