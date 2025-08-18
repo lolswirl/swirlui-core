@@ -26,24 +26,24 @@ function SwirlUI.Imports:ImportAll()
             if success then
                 successCount = successCount + 1
             else
-                print(string.format("%s Failed to import %s", SwirlUI.Header, SwirlUI.ApplyColor(profile.name, profile.color)))
+                SwirlUI.Utils:Print(string.format("Failed to import %s", SwirlUI.ApplyColor(profile.name, profile.color)))
             end
         else
-            print(string.format("%s %s addon not loaded, skipping", SwirlUI.Header, SwirlUI.ApplyColor(profile.name, profile.color)))
+            SwirlUI.Utils:Print(string.format("%s addon not loaded, skipping", SwirlUI.ApplyColor(profile.name, profile.color)))
         end
     end
 
-    print(string.format("%s Import complete! (%d/%d successful)", SwirlUI.Header, successCount, totalCount))
+    SwirlUI.Utils:Print(string.format("Import complete! (%d/%d successful)", successCount, totalCount))
 
     if successCount > 0 then
         SwirlUI.SettingsChanged = true
-        print(string.format("%s Type /reload to apply all changes", SwirlUI.Header))
+        SwirlUI.Utils:Print(string.format("Type /reload to apply all changes"))
     end
 end
 
 function SwirlUI.Imports:ApplyProfiles()
     if not self:CanApplyProfiles() then
-        print(string.format("%s Not all profiles are available. Import first!", SwirlUI.Header))
+        SwirlUI.Utils:Print("Not all profiles are available. Import first!")
         return false
     end
 
@@ -71,6 +71,7 @@ function SwirlUI.Imports:ApplyProfiles()
     end
 
     C_Timer.After((#steps + 1) * 0.5, function()
+        SwirlUI.CreateStatusDisplay_AF()
         SwirlUI:ReloadDialog()
     end)
     
@@ -146,7 +147,7 @@ function SwirlUI.Imports:ImportMinimapStats(notification)
     if notification then
         AF.ShowNotificationPopup(string.format("%s\n Imported %s", SwirlUI.NameNoCore, SwirlUI.ApplyColor(importProfile.name, importProfile.color)), 2)
     else
-        print(string.format("%s Imported %s", SwirlUI.Header, SwirlUI.ApplyColor(importProfile.name, importProfile.color)))
+        SwirlUI.Utils:Print(string.format("Imported %s", SwirlUI.ApplyColor(importProfile.name, importProfile.color)))
     end
     SwirlUI.Utils:StoreProfileVersion(importProfile)
 end

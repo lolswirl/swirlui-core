@@ -8,6 +8,13 @@ local characterProfile = string.format("%s - %s", UnitName("player"), GetRealmNa
 
 SwirlUI.Utils = {}
 
+function SwirlUI.Utils:Print(message)
+    if SwirlUIDB and SwirlUIDB.uiSettings and SwirlUIDB.uiSettings.silence then
+        return
+    end
+    print(string.format("%s %s", SwirlUI.Header, message))
+end
+
 function SwirlUI.Utils:HasProfile(addon, silent)
     if not IsAddOnLoaded(addon.name) then
         return false
@@ -24,7 +31,7 @@ function SwirlUI.Utils:HasProfile(addon, silent)
     if not addon.database or not addon.database["profiles"] or 
        (not addon.database["profiles"][SwirlUI.Profile] and not addon.database["profiles"][SwirlUI.ProfileTenEightyP]) then
         if not silent then
-            print(string.format("%s No profile found for %s", SwirlUI.Header, addon.name))
+            self:Print(string.format("No profile found for %s", SwirlUI.ApplyColor(addon.name, addon.color)))
         end
         return false
     end
@@ -33,7 +40,7 @@ end
 
 function SwirlUI.Utils:CheckAddOnLoaded(addon)
     if not IsAddOnLoaded(addon.name) then
-        print(string.format("%s %s addon not loaded", SwirlUI.Header, SwirlUI.ApplyColor(addon.name, addon.color)))
+        self:Print(string.format("%s addon not loaded", SwirlUI.ApplyColor(addon.name, addon.color)))
         return false
     end
     return true
@@ -96,18 +103,18 @@ end
 
 function SwirlUI.Utils:ApplyProfile(profile)
     if not IsAddOnLoaded(profile.name) then
-        print(string.format("%s %s addon not loaded", SwirlUI.Header, SwirlUI.ApplyColor(profile.name, profile.color)))
+        self:Print(string.format("%s addon not loaded", SwirlUI.ApplyColor(profile.name, profile.color)))
         return false
     end
 
     if profile.name == "MinimapStats" then
         if not profile.database or not profile.database["global"] then
-            print(string.format("%s No profile found for %s", SwirlUI.Header, SwirlUI.ApplyColor(profile.name, profile.color)))
+            self:Print(string.format("No profile found for %s", SwirlUI.ApplyColor(profile.name, profile.color)))
             return false
         end
 
         SwirlUI.Imports:ImportMinimapStats()
-        print(string.format("%s Applied %s profile", SwirlUI.Header, SwirlUI.ApplyColor(profile.name, profile.color)))
+        self:Print(string.format("Applied %s profile", SwirlUI.ApplyColor(profile.name, profile.color)))
         
         self:StoreProfileVersion(profile)
         return true
@@ -115,7 +122,7 @@ function SwirlUI.Utils:ApplyProfile(profile)
 
     if not profile.database or not profile.database["profiles"] or 
        (not profile.database["profiles"][SwirlUI.Profile] and not profile.database["profiles"][SwirlUI.ProfileTenEightyP]) then
-        print(string.format("%s No profile found for %s", SwirlUI.Header, SwirlUI.ApplyColor(profile.name, profile.color)))
+        self:Print(string.format("No profile found for %s", SwirlUI.ApplyColor(profile.name, profile.color)))
         return false
     end
     
@@ -123,13 +130,13 @@ function SwirlUI.Utils:ApplyProfile(profile)
     local activeProfile = profile.database["profileKeys"] and profile.database["profileKeys"][profileKey]
 
     if activeProfile == SwirlUI.Profile or activeProfile == SwirlUI.ProfileTenEightyP then
-        print(string.format("%s %s profile is already applied", SwirlUI.Header, SwirlUI.ApplyColor(profile.name, profile.color)))
+        self:Print(string.format("%s profile is already applied", SwirlUI.ApplyColor(profile.name, profile.color)))
     else
         if not profile.database["profileKeys"] then
             profile.database["profileKeys"] = {}
         end
         profile.database["profileKeys"][profileKey] = SwirlUI.Profile
-        print(string.format("%s Applied %s profile", SwirlUI.Header, SwirlUI.ApplyColor(profile.name, profile.color)))
+        self:Print(string.format("Applied %s profile", SwirlUI.ApplyColor(profile.name, profile.color)))
     end
 
     self:StoreProfileVersion(profile)
@@ -242,7 +249,7 @@ function SwirlUI.Utils:Import(addonName, notification)
     if notification then
         AF.ShowNotificationPopup(string.format("%s\n Imported %s", SwirlUI.NameNoCore, SwirlUI.ApplyColor(importProfile.name, importProfile.color)), 2)
     else
-        print(string.format("%s Imported %s", SwirlUI.Header, SwirlUI.ApplyColor(importProfile.name, importProfile.color)))
+        self:Print(string.format("Imported %s", SwirlUI.ApplyColor(importProfile.name, importProfile.color)))
     end
 
     self:StoreProfileVersion(importProfile)
