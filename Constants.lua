@@ -8,7 +8,7 @@ SwirlUI.Icon = "|TInterface/AddOns/SwirlUI/media/icon.png:16:16|t"
 
 SwirlUI.NameNoCore = SwirlUI.Title:gsub(" Core", "")
 SwirlUI.HeaderNoColon = string.format("%s%s", SwirlUI.Icon, SwirlUI.NameNoCore)
-SwirlUI.Header = string.format("%s:", SwirlUI.HeaderNoColon)
+SwirlUI.Header = string.format("%s »", SwirlUI.HeaderNoColon)
 
 -- font
 SwirlUI.Font = "Interface\\AddOns\\SharedMedia_SwirlUI\\font\\Swirl.ttf"
