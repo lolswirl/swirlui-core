@@ -6,6 +6,7 @@ local PLAYER_CLASS_COLOR_HEX = CreateColor(PLAYER_CLASS_COLOR.r, PLAYER_CLASS_CO
 
 local function PratRemoveShadows()
     if not C_AddOns.IsAddOnLoaded("Prat-3.0") then return end
+    if not SwirlUIDB or not SwirlUIDB.uiSettings or not SwirlUIDB.uiSettings.prat.enabled then return end
     for i = 1, NUM_CHAT_WINDOWS do
        local chatFrame = _G["ChatFrame" .. i]
         chatFrame:SetShadowColor(0, 0, 0, 1)
@@ -282,31 +283,6 @@ local function MinimapData()
     MailMinimapDataText()
 end
 
-local function SetupActionStatusFont()
-    ActionStatus.Text:SetFont(SwirlUI.Font, SwirlUI.FontSize, "OUTLINE")
-    ActionStatus.Text:SetShadowOffset(0, 0)
-    ActionStatus.Text:ClearAllPoints()
-    ActionStatus.Text:SetPoint("CENTER", UIParent, "CENTER", 0, 200)
-end
-
-local function SetupUIErrorsFrameFont()
-    UIErrorsFrame:SetFont(SwirlUI.Font, SwirlUI.FontSize, "OUTLINE")
-    UIErrorsFrame:SetShadowOffset(0, 0)
-    UIErrorsFrame:ClearAllPoints()
-    UIErrorsFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 200)
-end
-
-local function SetupChatBubbleFont()
-    ChatBubbleFont:SetFont(SwirlUI.Font, SwirlUI.FontSizeSmall, "OUTLINE")
-end
-
-local function SetupObjectiveTrackerFont()
-    ObjectiveTrackerLineFont:SetFont(SwirlUI.Font, SwirlUI.FontSize, "OUTLINE")
-    ObjectiveTrackerLineFont:SetShadowOffset(0, 0)
-    ObjectiveTrackerHeaderFont:SetFont(SwirlUI.Font, SwirlUI.FontSize, "OUTLINE")
-    ObjectiveTrackerHeaderFont:SetShadowOffset(0, 0)
-end
-
 local function SetupFrameAlphas()
     local Frames = {
         ZoneTextFrame,
@@ -331,15 +307,70 @@ local function SetupFrameAlphas()
     end
 end
 
-local function BlizzardSetups()
-    SetupActionStatusFont()
-    SetupUIErrorsFrameFont()
-    SetupChatBubbleFont()
-    SetupObjectiveTrackerFont()
-    SetupFrameAlphas()
+local function ApplyChatBubbleSettings()
+    if SwirlUIDB and SwirlUIDB.uiSettings and SwirlUIDB.uiSettings.chatBubbles.enabled then
+        ChatBubbleFont:SetFont(SwirlUI.Font, SwirlUIDB.uiSettings.chatBubbles.fontSize, "OUTLINE")
+    end
+end
+
+local function ApplyUIErrorsSettings()
+    if SwirlUIDB and SwirlUIDB.uiSettings and SwirlUIDB.uiSettings.uiErrors.enabled then
+        UIErrorsFrame:SetFont(SwirlUI.Font, SwirlUIDB.uiSettings.uiErrors.fontSize, "OUTLINE")
+        UIErrorsFrame:SetShadowOffset(0, 0)
+        UIErrorsFrame:ClearAllPoints()
+        UIErrorsFrame:SetPoint("CENTER", UIParent, "CENTER", SwirlUIDB.uiSettings.uiErrors.offsetX, SwirlUIDB.uiSettings.uiErrors.offsetY)
+    end
+end
+
+local function ApplyActionStatusSettings()
+    if SwirlUIDB and SwirlUIDB.uiSettings and SwirlUIDB.uiSettings.actionStatus.enabled then
+        ActionStatus.Text:SetFont(SwirlUI.Font, SwirlUIDB.uiSettings.actionStatus.fontSize, "OUTLINE")
+        ActionStatus.Text:SetShadowOffset(0, 0)
+        ActionStatus.Text:ClearAllPoints()
+        ActionStatus.Text:SetPoint("CENTER", UIParent, "CENTER", SwirlUIDB.uiSettings.actionStatus.offsetX, SwirlUIDB.uiSettings.actionStatus.offsetY)
+    end
+end
+
+local function ApplyQuestObjectivesSettings()
+    if SwirlUIDB and SwirlUIDB.uiSettings and SwirlUIDB.uiSettings.questObjectives.enabled then
+        ObjectiveTrackerLineFont:SetFont(SwirlUI.Font, SwirlUIDB.uiSettings.questObjectives.fontSize, "OUTLINE")
+        ObjectiveTrackerLineFont:SetShadowOffset(0, 0)
+        ObjectiveTrackerHeaderFont:SetFont(SwirlUI.Font, SwirlUIDB.uiSettings.questObjectives.fontSize, "OUTLINE")
+        ObjectiveTrackerHeaderFont:SetShadowOffset(0, 0)
+        if SwirlUIDB.uiSettings.questObjectives.removeGraphics.enabled then
+            SetupFrameAlphas()
+        end
+    end
+end
+
+local function ApplyGuildChatLogSettings()
+    if SwirlUIDB and SwirlUIDB.uiSettings and SwirlUIDB.uiSettings.guildChat.enabled then
+        CommunitiesFrame.Chat.MessageFrame:SetFont(SwirlUI.Font, SwirlUIDB.uiSettings.guildChat.fontSize, "OUTLINE")
+        CommunitiesFrame.Chat.MessageFrame:SetShadowOffset(0, 0)
+    end
+end
+
+local function ApplyUISettings()
+    ApplyChatBubbleSettings()
+    ApplyUIErrorsSettings()
+    ApplyActionStatusSettings()
+    ApplyQuestObjectivesSettings()
+    ApplyGuildChatLogSettings()
+end
+
+local function RegisterUISettingsCallbacks()
+    local AF = _G.AbstractFramework
+    if not AF then return end
+
+    AF.RegisterCallback("SwirlUI_ChatBubbles_Changed", ApplyChatBubbleSettings, "medium", "ChatBubblesUpdate")
+    AF.RegisterCallback("SwirlUI_UIErrors_Changed", ApplyUIErrorsSettings, "medium", "UIErrorsUpdate")
+    AF.RegisterCallback("SwirlUI_ActionStatus_Changed", ApplyActionStatusSettings, "medium", "ActionStatusUpdate")
+    AF.RegisterCallback("SwirlUI_QuestObjectives_Changed", ApplyQuestObjectivesSettings, "medium", "QuestObjectivesUpdate")
+    AF.RegisterCallback("SwirlUI_Chat_Changed", PratRemoveShadows, "medium", "ChatUpdate")
 end
 
 local function CheckProfileVersionUpdates()
+    if SwirlUIDB and SwirlUIDB.uiSettings and SwirlUIDB.uiSettings.silence then return end
     for _, profile in ipairs(SwirlUI.ImportProfiles) do
         if (profile.string or profile.data) and IsAddOnLoaded(profile.name) then
             local currentVersion = profile.version
@@ -347,21 +378,53 @@ local function CheckProfileVersionUpdates()
             
             if storedVersion and storedVersion ~= currentVersion then
                 local addonColor = SwirlUI.ApplyColor(profile.name, profile.color)
-                local versionColor = SwirlUI.ApplyColor(currentVersion, "00ff96")
-                print(string.format("%s Update available for %s to v%s", SwirlUI.Header, addonColor, versionColor))
+                local versionColor = SwirlUI.ApplyColor(currentVersion, SwirlUI.Friendly)
+                SwirlUI.Utils:Print(string.format("Update available for %s to v%s", addonColor, versionColor))
             end
         end
     end
 end
 
-function SwirlUI:Initialize()
+local function CheckProfilesReady()
+    if SwirlUIDB and SwirlUIDB.uiSettings and SwirlUIDB.uiSettings.silence then return end
+    local readyProfiles = {}
+    
+    for _, profile in ipairs(SwirlUI.Utils:GetAllProfiles()) do
+        local status = SwirlUI.Utils:GetAddonStatus(profile)
+        if status == SwirlUI.STATUS.READY then
+            table.insert(readyProfiles, profile)
+        end
+    end
+    
+    if #readyProfiles > 0 then
+        local readyCount = #readyProfiles
+        local readyColor = SwirlUI.ApplyColor(readyCount, SwirlUI.Neutral)
+        SwirlUI.Utils:Print(string.format("Profiles ready: %s", readyColor))
+    end
+end
+
+local function SetupDB()
     if not SwirlUIDB then
         SwirlUIDB = {
-            profileVersions = {}
+            profileVersions = {},
+            uiSettings = {},
         }
     end
+
     if not SwirlUIDB.profileVersions then
         SwirlUIDB.profileVersions = {}
+    end
+
+    if not SwirlUIDB.uiSettings then
+        SwirlUIDB.uiSettings = {
+            silence = false,
+            chatBubbles = { enabled = true, fontSize = 8 },
+            uiErrors = { enabled = true, fontSize = 12, offsetX = 0, offsetY = 200 },
+            actionStatus = { enabled = true, fontSize = 12, offsetX = 0, offsetY = 200 },
+            questObjectives = { enabled = true, fontSize = 12, removeGraphics = { enabled = true } },
+            prat = { enabled = true },
+            guildChat = { enabled = true, fontSize = 12 }
+        }
     end
 
     -- setting default popup location instead of asking user
@@ -375,10 +438,16 @@ function SwirlUI:Initialize()
             },
         }
     end
+end
 
-    BlizzardSetups()
+function SwirlUI:Initialize()
+    SetupDB()
+
+    ApplyUISettings()
+    RegisterUISettingsCallbacks()
     AddOnSetups()
     MinimapData()
-    
+
     CheckProfileVersionUpdates()
+    CheckProfilesReady()
 end

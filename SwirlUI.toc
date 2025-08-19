@@ -29,5 +29,7 @@ Strings.lua
 ImportExport.lua
 Setup.lua
 GUI.lua
+Modules/Profiles.lua
+Modules/Options.lua
 
 SwirlUI.lua

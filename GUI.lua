@@ -1,4 +1,5 @@
 local _, SwirlUI = ...
+local U = SwirlUI.Utils
 local AF = _G.AbstractFramework
 
 local _, UNIT_CLASS = UnitClass("player")
@@ -11,25 +12,47 @@ AF.AddButtonColor("accent_hover", {0.15, 0.15, 0.15, 1}, AF.GetColorTable("accen
 AF.AddColor("background", {0.024, 0.024, 0.031, 0.75})
 AF.AddColor("background2", {0.024, 0.024, 0.031, 0.3})
 
+SwirlUI.frames = SwirlUI.frames or {}
+
+local lastShownTab
+local profilesBtn, optionsBtn
+
+local function CreateTabButtons(optionsFrame)
+    profilesBtn = AF.CreateButton(optionsFrame, "Profiles", "accent_hover", 220, 21)
+    optionsBtn = AF.CreateButton(optionsFrame, "Options", "accent_hover", 221, 21)
+
+    profilesBtn:SetFrameLevel(optionsFrame:GetFrameLevel() + 2)
+    optionsBtn:SetFrameLevel(optionsFrame:GetFrameLevel() + 2)
+
+    profilesBtn:SetPoint("TOPLEFT", optionsFrame, "TOPLEFT", 0, 0)
+    optionsBtn:SetPoint("LEFT", profilesBtn, "RIGHT", -1, 0)
+
+    profilesBtn.id = "profiles"
+    optionsBtn.id = "options"
+
+    local function ShowTab(tab)
+        if lastShownTab ~= tab then
+            AF.Fire("ShowOptionsTab", tab)
+            lastShownTab = tab
+        end
+    end
+
+    AF.CreateButtonGroup({profilesBtn, optionsBtn}, ShowTab, function() end, function() end, function() end, function() end)
+end
+
 function SwirlUI.ShowImportGUI_AF()
     if _G.SWIRLUI_AF_FRAME then
         _G.SWIRLUI_AF_FRAME:Show()
-        if SwirlUI.UpdateStatusDisplay_AF then
-            SwirlUI.UpdateStatusDisplay_AF()
+        if lastShownTab then
+            AF.Fire("ShowOptionsTab", lastShownTab)
+        else
+            profilesBtn:Click()
         end
         return
     end
 
-    local allProfiles = SwirlUI.Utils:GetAllProfiles()
-    local statusListHeight = (#allProfiles + 1) * 22
-    local applyProfilesHeight = 24
-    local titlePaneHeight = 24
-    local scrollListTitleHeight = 24
-    local statusGroupHeight = statusListHeight + applyProfilesHeight + titlePaneHeight + scrollListTitleHeight
-    local totalFrameHeight = statusGroupHeight + 200
-
     local frame = AF.CreateHeaderedFrame(AF.UIParent, "SWIRLUI_AF_FRAME",
-        SwirlUI.HeaderNoColon, 440, totalFrameHeight)
+        SwirlUI.HeaderNoColon, 440, 475)
     AF.SetPoint(frame, "CENTER", UIParent, "CENTER", 0, 0)
     frame:SetTitleColor("white")
     frame:SetFrameLevel(100)
@@ -45,44 +68,11 @@ function SwirlUI.ShowImportGUI_AF()
     _G["SwirlUI_AF_Frame"] = frame
     table.insert(UISpecialFrames, "SwirlUI_AF_Frame")
 
-    local statusGroup = AF.CreateTitledPane(frame, "Profile Status", 430, statusGroupHeight)
-    AF.SetPoint(statusGroup, "TOPLEFT", frame, "TOPLEFT", 5, -5)
+    SwirlUI.frames.optionsFrame = frame
 
-    local statusScrollLists = {}
-
-    local applyBtn = AF.CreateButton(statusGroup, "Apply Profiles", "accent_hover", 430, 24)
-    AF.SetPoint(applyBtn, "BOTTOM", statusGroup, "BOTTOM", 0, 0)
-    applyBtn:SetOnClick(function()
-        SwirlUI.Imports:ApplyProfiles()
-        SwirlUI.UpdateStatusDisplay_AF()
-    end)
-
-    local uiScaleGroup = AF.CreateTitledPane(frame, "UI Scale", 430, 100)
-    AF.SetPoint(uiScaleGroup, "TOPLEFT", statusGroup, "BOTTOMLEFT", 0, -10)
-
-    local uiScaleSlider = AF.CreateSlider(uiScaleGroup, "UI Scale", 430, 0.1, 2, 0.01, false, true)
-    AF.SetPoint(uiScaleSlider, "TOPLEFT", uiScaleGroup, "TOPLEFT", 0, -42)
-    uiScaleSlider:SetValue(tonumber(GetCVar("UIScale")))
-    uiScaleSlider:SetAfterValueChanged(function(value)
-        UIParent:SetScale(value)
-        SetCVar("UIScale", value)
-        SwirlUI.SettingsChanged = true
-    end)
-
-    local presetScales = {0.53, 0.63, 0.71, 1}
-    for i, scale in ipairs(presetScales) do
-        local scaleBtn = AF.CreateButton(uiScaleGroup, tostring(scale), "accent_hover", 100, 24)
-        AF.SetPoint(scaleBtn, "TOPLEFT", uiScaleSlider, "BOTTOMLEFT", 6 + (i-1) * 106, -20)
-        scaleBtn:SetOnClick(function()
-            SetCVar("UIScale", scale)
-            UIParent:SetScale(scale)
-            uiScaleSlider:SetValue(scale)
-            SwirlUI.SettingsChanged = true
-        end)
-    end
-
-    local supportGroup = AF.CreateTitledPane(frame, "Support", 430, 90)
-    AF.SetPoint(supportGroup, "TOPLEFT", uiScaleGroup, "BOTTOMLEFT", 0, -10)
+    local supportGroup = AF.CreateTitledPane(frame, "Support", 430, 65)
+    AF.SetPoint(supportGroup, "BOTTOMLEFT", frame, "BOTTOMLEFT", 5, 5)
+    supportGroup:SetFrameLevel(frame:GetFrameLevel() + 3)
 
     local helpText = AF.CreateFontString(supportGroup, string.format("Join the discord for %s support", SwirlUI.HeaderNoColon), "white", "AF_FONT_NORMAL")
     AF.SetPoint(helpText, "TOPLEFT", 0, -25)
@@ -93,117 +83,11 @@ function SwirlUI.ShowImportGUI_AF()
     discordBox:SetNotUserChangable(true)
     discordBox:SetCursorPosition(0)
 
-    function SwirlUI.CreateStatusDisplay_AF()
-        for _, data in pairs(statusScrollLists) do
-            data.scrollList:Hide()
-            data.scrollList:Reset()
-        end
-        statusScrollLists = {}
-        
-        local newStatusGroups = {}
-        local newAllProfiles = SwirlUI.Utils:GetAllProfiles()
+    CreateTabButtons(frame)
 
-        for _, profile in ipairs(newAllProfiles) do
-            AF.AddColor(profile.name, profile.color)
-            local status = SwirlUI.Utils:GetAddonStatus(profile)
-            
-            if not newStatusGroups[status] then
-                newStatusGroups[status] = {}
-            end
-            table.insert(newStatusGroups[status], profile)
-        end
-
-        local newStatusList = {}
-        for status, _ in pairs(newStatusGroups) do
-            table.insert(newStatusList, status)
-        end
-        
-        table.sort(newStatusList, function(a, b)
-            local orderA = SwirlUI.STATUS_ORDER[a] or 999
-            local orderB = SwirlUI.STATUS_ORDER[b] or 999
-            if orderA == orderB then
-                return a < b
-            end
-            return orderA < orderB
-        end)
-
-        local totalWidth = 430
-        local listCount = #newStatusList
-        local spacing = 10
-        local columnWidth = math.floor((totalWidth - (listCount - 1) * spacing) / listCount)
-        local listHeight = (#newAllProfiles + 1) * 22 + 2
-
-        for i, status in ipairs(newStatusList) do
-            local profiles = newStatusGroups[status]
-            local color = SwirlUI.Utils:GetAddonStatusColor(profiles[1])
-            
-            local xOffset = math.floor((i - 1) * (columnWidth + spacing))
-            
-            -- annoying margining in ScrollList from BorderedFrame
-            if listCount == 2 then
-                if i == 1 then
-                    xOffset = xOffset + 1
-                elseif i == 2 then
-                    xOffset = xOffset - 1
-                end
-            elseif listCount == 3 then
-                if i == 1 or i == 3 then
-                    xOffset = xOffset + 1
-                end
-            end
-            
-            local scrollList = AF.CreateScrollList(statusGroup, nil, 5, 5, #newAllProfiles, 22, 2, "background2", color)
-            AF.SetPoint(scrollList, "TOPLEFT", statusGroup, "TOPLEFT", xOffset, -40)
-            AF.SetSize(scrollList, columnWidth, listHeight)
-            scrollList:SetLabel(status, color)
-            scrollList.accentColor = color
-            
-            if scrollList.scrollThumb then
-                scrollList.scrollThumb:SetBackdropColor(AF.GetColorRGB(color, 0.7))
-                scrollList.scrollThumb.r, scrollList.scrollThumb.g, scrollList.scrollThumb.b = AF.GetColorRGB(color)
-            end
-            
-            local statusWidgets = {}
-            for _, profile in ipairs(profiles) do
-                local addonName = profile.name or profile.short
-                local addonColor = SwirlUI.Utils:GetAddonStatusColor(profile)
-                
-                local btn = AF.CreateButton(scrollList.slotFrame, SwirlUI.ApplyColor(addonName, profile.color), addonColor .. "_transparent", nil, 22, nil, "none", "")
-                btn:SetTextJustifyH("LEFT")
-                btn:SetTextColor(AF.GetColorRGB(addonColor))
-                
-                if profile.string or profile.data then
-                    btn:SetOnClick(function()
-                        local importFunction = string.format("Import%s", profile.short or profile.name)
-                        if SwirlUI.Imports[importFunction] then
-                            SwirlUI.Imports[importFunction](SwirlUI.Imports, true)
-                            SwirlUI.UpdateStatusDisplay_AF()
-                        end
-                    end)
-                end
-
-                local tooltip = SwirlUI.STATUS_TOOLTIPS[status]
-                if not profile.string and not profile.data then
-                    tooltip = "Import profile through '/wago'"
-                end
-                AF.SetTooltips(btn, "ANCHOR_CURSOR_RIGHT", 0, 2, "", tooltip)
-
-                table.insert(statusWidgets, btn)
-            end
-            
-            scrollList:SetWidgets(statusWidgets)
-            statusScrollLists[status] = {scrollList = scrollList}
-        end
+    if not lastShownTab then
+        profilesBtn:Click()
     end
-
-    function SwirlUI.UpdateStatusDisplay_AF()
-        
-        SwirlUI.CreateStatusDisplay_AF()
-    end
-
-    SwirlUI.CreateStatusDisplay_AF()
-
-    SwirlUI.UpdateStatusDisplay = SwirlUI.UpdateStatusDisplay_AF
 
     frame:Show()
     _G.SWIRLUI_AF_FRAME = frame
@@ -245,7 +129,7 @@ function SwirlUI.ShowExportGUI_AF()
             if SwirlUI.Imports[exportFunction] then
                 SwirlUI.Imports[exportFunction](SwirlUI.Imports)
             else
-                print(string.format("%s Export function %s not found!", SwirlUI.Header, exportFunction))
+                U:Print(string.format("Export function %s not found!", exportFunction))
             end
         end)
     end
@@ -261,7 +145,6 @@ function SwirlUI:ReloadDialog(frame)
     end, function()
     end)
 end
-
 
 function SwirlUI.CreateStatusDialog(title, content, editBoxContent)
     local width, height = 400, 25
