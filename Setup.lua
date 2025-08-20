@@ -4,18 +4,19 @@ local PLAYER_CLASS = select(2, UnitClass("player"))
 local PLAYER_CLASS_COLOR = RAID_CLASS_COLORS[PLAYER_CLASS]
 local PLAYER_CLASS_COLOR_HEX = CreateColor(PLAYER_CLASS_COLOR.r, PLAYER_CLASS_COLOR.g, PLAYER_CLASS_COLOR.b):GenerateHexColor()
 
-local function PratRemoveShadows()
+local function ChatRemoveShadows()
     if not C_AddOns.IsAddOnLoaded("Prat-3.0") then return end
-    if not SwirlUIDB or not SwirlUIDB.uiSettings or not SwirlUIDB.uiSettings.prat.enabled then return end
+    if not SwirlUIDB or not SwirlUIDB.uiSettings or not SwirlUIDB.uiSettings.chat.disableChatShadows then return end
     for i = 1, NUM_CHAT_WINDOWS do
        local chatFrame = _G["ChatFrame" .. i]
         chatFrame:SetShadowColor(0, 0, 0, 1)
         chatFrame:SetShadowOffset(0, 0) 
     end
+    CommunitiesFrame.Chat.MessageFrame:SetShadowOffset(0, 0)
 end
 
 local function AddOnSetups()
-    PratRemoveShadows()
+    ChatRemoveShadows()
 end
 
 local function BugSackMinimapButton()
@@ -337,16 +338,9 @@ local function ApplyQuestObjectivesSettings()
         ObjectiveTrackerLineFont:SetShadowOffset(0, 0)
         ObjectiveTrackerHeaderFont:SetFont(SwirlUI.Font, SwirlUIDB.uiSettings.questObjectives.fontSize, "OUTLINE")
         ObjectiveTrackerHeaderFont:SetShadowOffset(0, 0)
-        if SwirlUIDB.uiSettings.questObjectives.removeGraphics.enabled then
+        if SwirlUIDB.uiSettings.questObjectives.removeGraphics then
             SetupFrameAlphas()
         end
-    end
-end
-
-local function ApplyGuildChatLogSettings()
-    if SwirlUIDB and SwirlUIDB.uiSettings and SwirlUIDB.uiSettings.guildChat.enabled then
-        CommunitiesFrame.Chat.MessageFrame:SetFont(SwirlUI.Font, SwirlUIDB.uiSettings.guildChat.fontSize, "OUTLINE")
-        CommunitiesFrame.Chat.MessageFrame:SetShadowOffset(0, 0)
     end
 end
 
@@ -355,7 +349,6 @@ local function ApplyUISettings()
     ApplyUIErrorsSettings()
     ApplyActionStatusSettings()
     ApplyQuestObjectivesSettings()
-    ApplyGuildChatLogSettings()
 end
 
 local function RegisterUISettingsCallbacks()
@@ -366,7 +359,7 @@ local function RegisterUISettingsCallbacks()
     AF.RegisterCallback("SwirlUI_UIErrors_Changed", ApplyUIErrorsSettings, "medium", "UIErrorsUpdate")
     AF.RegisterCallback("SwirlUI_ActionStatus_Changed", ApplyActionStatusSettings, "medium", "ActionStatusUpdate")
     AF.RegisterCallback("SwirlUI_QuestObjectives_Changed", ApplyQuestObjectivesSettings, "medium", "QuestObjectivesUpdate")
-    AF.RegisterCallback("SwirlUI_Chat_Changed", PratRemoveShadows, "medium", "ChatUpdate")
+    AF.RegisterCallback("SwirlUI_Chat_Changed", ChatRemoveShadows, "medium", "ChatUpdate")
 end
 
 local function CheckProfileVersionUpdates()
@@ -421,9 +414,8 @@ local function SetupDB()
             chatBubbles = { enabled = true, fontSize = 8 },
             uiErrors = { enabled = true, fontSize = 12, offsetX = 0, offsetY = 200 },
             actionStatus = { enabled = true, fontSize = 12, offsetX = 0, offsetY = 200 },
-            questObjectives = { enabled = true, fontSize = 12, removeGraphics = { enabled = true } },
-            prat = { enabled = true },
-            guildChat = { enabled = true, fontSize = 12 }
+            questObjectives = { enabled = true, fontSize = 12, removeGraphics = true },
+            chat = { disableChatShadows = true }
         }
     end
 
