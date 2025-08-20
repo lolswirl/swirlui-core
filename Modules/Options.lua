@@ -200,12 +200,12 @@ local function CreateOptionsTab()
     questObjectivesEnabled:SetChecked(SwirlUIDB.uiSettings.questObjectives.enabled)
 
     local questObjectivesRemoveGraphics = AF.CreateCheckButton(questObjectivesGroup, "Remove Graphics", function(checked)
-        SwirlUIDB.uiSettings.questObjectives.removeGraphics.enabled = checked
+        SwirlUIDB.uiSettings.questObjectives.removeGraphics = checked
         AF.Fire("SwirlUI_QuestObjectives_Changed")
         SwirlUI.SettingsChanged = true
     end)
     AF.SetPoint(questObjectivesRemoveGraphics, "LEFT", questObjectivesEnabled, "RIGHT", 75, 0)
-    questObjectivesRemoveGraphics:SetChecked(SwirlUIDB.uiSettings.questObjectives.removeGraphics.enabled)
+    questObjectivesRemoveGraphics:SetChecked(SwirlUIDB.uiSettings.questObjectives.removeGraphics)
 
     local questObjectivesFontSize = AF.CreateSlider(questObjectivesGroup, "Font Size", 200, 8, 24, 1, false, true)
     AF.SetPoint(questObjectivesFontSize, "TOPLEFT", questObjectivesEnabled, "BOTTOMLEFT", 0, -25)
@@ -223,12 +223,12 @@ local function CreateOptionsTab()
     SetGroupHoverEffect(chatGroup)
 
     local chatEnabled = AF.CreateCheckButton(chatGroup, "Remove Text Shadows", function(checked)
-        SwirlUIDB.uiSettings.prat.enabled = checked
+        SwirlUIDB.uiSettings.chat.disableChatShadows = checked
         AF.Fire("SwirlUI_Chat_Changed")
         SwirlUI.SettingsChanged = true
     end)
     AF.SetPoint(chatEnabled, "TOPLEFT", chatGroup, "TOPLEFT", firstWidgetStartX, firstWidgetStartY)
-    chatEnabled:SetChecked(SwirlUIDB.uiSettings.prat.enabled)
+    chatEnabled:SetChecked(SwirlUIDB.uiSettings.chat.disableChatShadows)
 
     scrollFrame:SetContentHeight(680)
 end
