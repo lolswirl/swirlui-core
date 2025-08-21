@@ -32,6 +32,14 @@ local function CreateProfilesTab()
     AF.SetPoint(silenceCheckbox, "TOPLEFT", generalSettings, "TOPLEFT", 0, -30)
     silenceCheckbox:SetChecked(SwirlUIDB.uiSettings.silence)
 
+    local moveAFPopupsCheckbox = AF.CreateCheckButton(generalSettings, string.format("Move %s Popups", AF.GetGradientText("AbstractFramework", "blazing_tangerine", "vivid_raspberry")), function(checked)
+        SwirlUIDB.uiSettings.moveAFPopups = checked
+        SwirlUI.SettingsChanged = true
+        AF.Fire("SwirlUI_AbstractFrameworkPopups_Changed")
+    end)
+    AF.SetPoint(moveAFPopupsCheckbox, "TOPLEFT", silenceCheckbox, "TOPLEFT", 0, -25)
+    moveAFPopupsCheckbox:SetChecked(SwirlUIDB.uiSettings.moveAFPopups)
+
     function SwirlUI.CreateStatusDisplay_AF()
         for _, data in pairs(statusScrollLists) do
             data.scrollList:Hide()

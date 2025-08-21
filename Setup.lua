@@ -344,6 +344,23 @@ local function ApplyQuestObjectivesSettings()
     end
 end
 
+local function MoveAbstractFrameworkPopups()
+    if AFConfig then
+        if SwirlUIDB.uiSettings.moveAFPopups then
+            AFConfig["popups"] = {
+                ["orientation"] = "top_to_bottom",
+                ["position"] = {
+                    "TOP",
+                    0,
+                    -100,
+                },
+            }
+        else
+            AFConfig["popups"] = nil
+        end
+    end
+end
+
 local function ApplyUISettings()
     ApplyChatBubbleSettings()
     ApplyUIErrorsSettings()
@@ -360,6 +377,7 @@ local function RegisterUISettingsCallbacks()
     AF.RegisterCallback("SwirlUI_ActionStatus_Changed", ApplyActionStatusSettings, "medium", "ActionStatusUpdate")
     AF.RegisterCallback("SwirlUI_QuestObjectives_Changed", ApplyQuestObjectivesSettings, "medium", "QuestObjectivesUpdate")
     AF.RegisterCallback("SwirlUI_Chat_Changed", ChatRemoveShadows, "medium", "ChatUpdate")
+    AF.RegisterCallback("SwirlUI_AbstractFrameworkPopups_Changed", MoveAbstractFrameworkPopups, "medium", "AbstractFrameworkPopupsUpdate")
 end
 
 local function CheckProfileVersionUpdates()
@@ -411,6 +429,7 @@ local function SetupDB()
     if not SwirlUIDB.uiSettings then
         SwirlUIDB.uiSettings = {
             silence = false,
+            moveAFPopups = true,
             chatBubbles = { enabled = true, fontSize = 8 },
             uiErrors = { enabled = true, fontSize = 12, offsetX = 0, offsetY = 200 },
             actionStatus = { enabled = true, fontSize = 12, offsetX = 0, offsetY = 200 },
@@ -420,16 +439,7 @@ local function SetupDB()
     end
 
     -- setting default popup location instead of asking user
-    if AFConfig then
-        AFConfig["popups"] = {
-            ["orientation"] = "top_to_bottom",
-            ["position"] = {
-                "TOP",
-                0,
-                -100,
-            },
-        }
-    end
+    MoveAbstractFrameworkPopups()
 end
 
 function SwirlUI:Initialize()
