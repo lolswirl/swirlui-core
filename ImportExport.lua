@@ -15,6 +15,18 @@ function SwirlUI.Imports:CanApplyProfiles()
     return true
 end
 
+function SwirlUI.Imports:AreAllProfilesApplied()
+    local allProfiles = SwirlUI.Utils:GetAllProfiles()
+    
+    for _, profile in ipairs(allProfiles) do
+        if SwirlUI.Utils:HasProfile(profile, true) and not SwirlUI.Utils:IsProfileApplied(profile) then
+            return false
+        end
+    end
+    
+    return true
+end
+
 function SwirlUI.Imports:ImportAll()
     local successCount = 0
     local totalCount = #SwirlUI.ImportProfiles
@@ -150,6 +162,7 @@ function SwirlUI.Imports:ImportMinimapStats(notification)
         SwirlUI.Utils:Print(string.format("Imported %s", SwirlUI.ApplyColor(importProfile.name, importProfile.color)))
     end
     SwirlUI.Utils:StoreProfileVersion(importProfile)
+    return true
 end
 
 function SwirlUI.Imports:ExportMinimapStats()

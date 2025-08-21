@@ -3,6 +3,7 @@ local AF = _G.AbstractFramework
 
 local profilesTab
 local statusScrollLists = {}
+local importAllBtn, applyAllBtn
 
 local function CreateProfilesTab()
     profilesTab = AF.CreateFrame(SwirlUI.frames.optionsFrame, "SwirlUI_ProfilesTab", nil, nil, true)
@@ -16,14 +17,22 @@ local function CreateProfilesTab()
     local statusGroup = AF.CreateTitledPane(profilesTab, "Profile Status", 430, statusGroupHeight)
     AF.SetPoint(statusGroup, "TOPLEFT", profilesTab, "TOPLEFT", 5, -25)
 
-    local applyBtn = AF.CreateButton(statusGroup, "Apply Profiles", "accent_hover", 430, 24)
-    AF.SetPoint(applyBtn, "BOTTOM", statusGroup, "BOTTOM", 0, 0)
-    applyBtn:SetOnClick(function()
+    importAllBtn = AF.CreateButton(statusGroup, "Import All Profiles", "accent_hover", 210, 24)
+    AF.SetPoint(importAllBtn, "BOTTOMLEFT", statusGroup, "BOTTOMLEFT", 0, 0)
+    importAllBtn:SetOnClick(function()
+        SwirlUI.Imports:ImportAll()
+        SwirlUI.CreateStatusDisplay_AF()
+    end)
+
+    applyAllBtn = AF.CreateButton(statusGroup, "Apply All Profiles", "accent_hover", 210, 24)
+    AF.SetPoint(applyAllBtn, "BOTTOMRIGHT", statusGroup, "BOTTOMRIGHT", 0, 0)
+    applyAllBtn:SetOnClick(function()
         SwirlUI.Imports:ApplyProfiles()
+        SwirlUI.CreateStatusDisplay_AF()
     end)
 
     local generalSettings = AF.CreateTitledPane(profilesTab, "General Settings", 430, 65)
-    AF.SetPoint(generalSettings, "TOPLEFT", applyBtn, "BOTTOMLEFT", 0, -5)
+    AF.SetPoint(generalSettings, "TOPLEFT", importAllBtn, "BOTTOMLEFT", 0, -5)
 
     local silenceCheckbox = AF.CreateCheckButton(generalSettings, string.format("Silence %s Chat Messages", SwirlUI.NameNoCore), function(checked)
         SwirlUIDB.uiSettings.silence = checked
@@ -138,6 +147,16 @@ local function CreateProfilesTab()
             
             scrollList:SetWidgets(statusWidgets)
             statusScrollLists[status] = {scrollList = scrollList}
+        end
+
+        if applyAllBtn then
+            local allApplied = SwirlUI.Imports:AreAllProfilesApplied()
+            applyAllBtn:SetEnabled(not allApplied)
+            if allApplied then
+                applyAllBtn:SetText("All Profiles Applied")
+            else
+                applyAllBtn:SetText("Apply All Profiles")
+            end
         end
     end
 

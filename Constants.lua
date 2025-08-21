@@ -33,7 +33,7 @@ SwirlUI.SettingsChanged = false
 -- status
 SwirlUI.STATUS = {
     ADDON_DISABLED = "AddOn Disabled",
-    NO_PROFILE = "No Profile! Import below",
+    NO_PROFILE = "No Profile",
     NEW_VERSION_AVAILABLE = "New Version Available",
     ACTIVE = "Active",
     READY = "Ready",
