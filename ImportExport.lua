@@ -43,7 +43,7 @@ end
 
 function SwirlUI.Imports:ApplyProfiles()
     if not self:CanApplyProfiles() then
-        SwirlUI.Utils:Print("Not all profiles are available. Import first!")
+        AF.ShowNotificationPopup(string.format("%s\n Not all profiles are available, check their import/enabled status", SwirlUI.NameNoCore), 2)
         return false
     end
 
