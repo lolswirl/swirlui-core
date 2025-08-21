@@ -38,6 +38,7 @@ tempFile=$(mktemp)
 git shortlog --no-merges --reverse "$previous..$current" > "$tempFile"
 
 # Initialize arrays to hold categorized commits
+profileCommits=()
 featureCommits=()
 bugfixCommits=()
 misCommits=()
@@ -48,7 +49,10 @@ while IFS= read -r line; do
   commitMessage=$(echo "$line" | sed -e 's/^\s*[^ ]\+ //')
 
   # Check for commit suffixes
-  if echo "$line" | grep -q "\[feature\]"; then
+  if echo "$line" | grep -q "\[profile\]"; then
+    # Remove suffix and add to profile array
+    profileCommits+=("- ${commitMessage//\[profile\]/}")
+  elif echo "$line" | grep -q "\[feature\]"; then
     # Remove suffix and add to features array
     featureCommits+=("- ${commitMessage//\[feature\]/}")
   elif echo "$line" | grep -q "\[bugfix\]"; then
@@ -65,6 +69,13 @@ rm "$tempFile"
 
 # Write results to changelog
 {
+  if [ ${#profileCommits[@]} -ne 0 ]; then
+    echo -ne "### profiles\n"
+    for commit in "${profileCommits[@]}"; do
+      echo "$commit"
+    done
+  fi
+
   if [ ${#featureCommits[@]} -ne 0 ]; then
     echo -ne "### features\n"
     for commit in "${featureCommits[@]}"; do
