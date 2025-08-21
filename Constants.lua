@@ -19,6 +19,7 @@ SwirlUI.FontSizeSmall = 8
 SwirlUI.Friendly = "49AF4C"
 SwirlUI.Neutral = "D8C45B"
 SwirlUI.Hostile = "C63F3F"
+SwirlUI.Orange = "FF6C31"
 
 SwirlUI.ApplyColor = function(text, color)
     return string.format("|cFF%s%s|r", color, text)

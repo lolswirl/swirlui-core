@@ -78,7 +78,7 @@ function SwirlUI.Utils:GetAddonStatus(addon)
     end
 
     if self:IsProfileVersionChanged(addon) then
-        return SwirlUI.STATUS.NEW_VERSION_AVAILABLE, SwirlUI.Hostile
+        return SwirlUI.STATUS.NEW_VERSION_AVAILABLE, SwirlUI.Orange
     end
 
     if self:IsProfileApplied(addon) then
