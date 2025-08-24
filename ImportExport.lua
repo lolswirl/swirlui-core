@@ -45,11 +45,11 @@ function SwirlUI.Imports:ImportAll()
         end
     end
 
-    SwirlUI.Utils:Print(string.format("Import complete! (%d/%d successful)", successCount, totalCount))
+    AF.ShowNotificationPopup(string.format("%s\n Import complete! (%d/%d successful)", SwirlUI.NameNoCore, successCount, totalCount), 2)
 
     if successCount > 0 then
         SwirlUI.SettingsChanged = true
-        SwirlUI.Utils:Print(string.format("Type /reload to apply all changes"))
+        SwirlUI.Utils:Print(string.format("Please /reload to apply all changes"))
     end
 end
 
