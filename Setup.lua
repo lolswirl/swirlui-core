@@ -426,16 +426,32 @@ local function SetupDB()
         SwirlUIDB.profileVersions = {}
     end
 
+    local defaultUiSettings = {
+        silence = false,
+        moveAFPopups = true,
+        chatBubbles = { enabled = true, fontSize = 8 },
+        uiErrors = { enabled = true, fontSize = 12, offsetX = 0, offsetY = 200 },
+        actionStatus = { enabled = true, fontSize = 12, offsetX = 0, offsetY = 200 },
+        questObjectives = { enabled = true, fontSize = 12, removeGraphics = true },
+        chat = { disableChatShadows = true }
+    }
+
     if not SwirlUIDB.uiSettings then
-        SwirlUIDB.uiSettings = {
-            silence = false,
-            moveAFPopups = true,
-            chatBubbles = { enabled = true, fontSize = 8 },
-            uiErrors = { enabled = true, fontSize = 12, offsetX = 0, offsetY = 200 },
-            actionStatus = { enabled = true, fontSize = 12, offsetX = 0, offsetY = 200 },
-            questObjectives = { enabled = true, fontSize = 12, removeGraphics = true },
-            chat = { disableChatShadows = true }
-        }
+        SwirlUIDB.uiSettings = {}
+    end
+
+    for key, defaultValue in pairs(defaultUiSettings) do
+        if SwirlUIDB.uiSettings[key] == nil then
+            SwirlUIDB.uiSettings[key] = defaultValue
+        elseif type(defaultValue) == "table" and type(SwirlUIDB.uiSettings[key]) == "table" then
+            for subKey, subDefault in pairs(defaultValue) do
+                if SwirlUIDB.uiSettings[key][subKey] == nil then
+                    SwirlUIDB.uiSettings[key][subKey] = subDefault
+                end
+            end
+        elseif type(defaultValue) ~= type(SwirlUIDB.uiSettings[key]) then
+            SwirlUIDB.uiSettings[key] = defaultValue
+        end
     end
 
     -- setting default popup location instead of asking user
