@@ -140,7 +140,7 @@ local function CreateProfilesTab()
                 if not profile.string and not profile.data then
                     tooltip = "Import profile through '/wago'"
                 end
-                AF.SetTooltips(btn, "ANCHOR_CURSOR_RIGHT", 0, 2, "", tooltip)
+                AF.SetTooltip(btn, "ANCHOR_CURSOR_RIGHT", 0, 2, "", tooltip)
 
                 table.insert(statusWidgets, btn)
             end
@@ -164,7 +164,7 @@ local function CreateProfilesTab()
 end
 
 local function ShowTab(callback, tab)
-    if tab == "profiles" then
+    if tab == "Profiles" then
         if not profilesTab then
             CreateProfilesTab()
         end

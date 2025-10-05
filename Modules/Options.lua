@@ -234,7 +234,7 @@ local function CreateOptionsTab()
 end
 
 local function ShowTab(callback, tab)
-    if tab == "options" then
+    if tab == "Options" then
         if not optionsTab then
             CreateOptionsTab()
         end

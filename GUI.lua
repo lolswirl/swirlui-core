@@ -14,14 +14,14 @@ AF.AddColor("background", {0.024, 0.024, 0.031, 0.75})
 AF.AddColor("background2", {0.024, 0.024, 0.031, 0.3})
 
 -- override AF fonts with outlines
-AF.CreateFont("AF_FONT_TITLE", SwirlUI.Font, SwirlUI.FontSize + 2, "OUTLINE", false, "white")
-AF.CreateFont("AF_FONT_NORMAL", SwirlUI.Font, SwirlUI.FontSize + 1, "OUTLINE", false, "white")
-AF.CreateFont("AF_FONT_CHAT", SwirlUI.Font, SwirlUI.FontSize + 1, "OUTLINE", false, "white")
-AF.CreateFont("AF_FONT_OUTLINE", SwirlUI.Font, SwirlUI.FontSize + 1, "OUTLINE", false, "accent")
-AF.CreateFont("AF_FONT_SMALL", SwirlUI.Font, SwirlUI.FontSize - 1, "OUTLINE", false, "white")
-AF.CreateFont("AF_FONT_CHINESE", SwirlUI.Font, SwirlUI.FontSize + 2, "OUTLINE", false, "white")
-AF.CreateFont("AF_FONT_TOOLTIP_HEADER", SwirlUI.Font, SwirlUI.FontSize + 2, "OUTLINE", false, "white")
-AF.CreateFont("AF_FONT_TOOLTIP", SwirlUI.Font, SwirlUI.FontSize + 1, "OUTLINE", false, "white")
+AF.CreateFont(SwirlUI.Title, "AF_FONT_TITLE", SwirlUI.Font, SwirlUI.FontSize + 2, "OUTLINE", false, "white")
+AF.CreateFont(SwirlUI.Title, "AF_FONT_NORMAL", SwirlUI.Font, SwirlUI.FontSize + 1, "OUTLINE", false, "white")
+AF.CreateFont(SwirlUI.Title, "AF_FONT_CHAT", SwirlUI.Font, SwirlUI.FontSize + 1, "OUTLINE", false, "white")
+AF.CreateFont(SwirlUI.Title, "AF_FONT_OUTLINE", SwirlUI.Font, SwirlUI.FontSize + 1, "OUTLINE", false, "accent")
+AF.CreateFont(SwirlUI.Title, "AF_FONT_SMALL", SwirlUI.Font, SwirlUI.FontSize - 1, "OUTLINE", false, "white")
+AF.CreateFont(SwirlUI.Title, "AF_FONT_CHINESE", SwirlUI.Font, SwirlUI.FontSize + 2, "OUTLINE", false, "white")
+AF.CreateFont(SwirlUI.Title, "AF_FONT_TOOLTIP_HEADER", SwirlUI.Font, SwirlUI.FontSize + 2, "OUTLINE", false, "white")
+AF.CreateFont(SwirlUI.Title, "AF_FONT_TOOLTIP", SwirlUI.Font, SwirlUI.FontSize + 1, "OUTLINE", false, "white")
 
 
 SwirlUI.frames = SwirlUI.frames or {}
@@ -39,12 +39,9 @@ local function CreateTabButtons(optionsFrame)
     profilesBtn:SetPoint("TOPLEFT", optionsFrame, "TOPLEFT", 0, 0)
     optionsBtn:SetPoint("LEFT", profilesBtn, "RIGHT", -1, 0)
 
-    profilesBtn.id = "profiles"
-    optionsBtn.id = "options"
-
     local function ShowTab(tab)
         if lastShownTab ~= tab then
-            AF.Fire("ShowOptionsTab", tab)
+            AF.Fire("ShowOptionsTab", tab.id)
             lastShownTab = tab
         end
     end
