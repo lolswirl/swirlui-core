@@ -361,11 +361,29 @@ local function MoveAbstractFrameworkPopups()
     end
 end
 
+function ApplyMouseClickSettings()
+    if SwirlUIDB and SwirlUIDB.uiSettings and SwirlUIDB.uiSettings.mouseClick then
+        if SwirlUIDB.uiSettings.mouseClick.lfgListFrame then
+            local frame = LFGListFrame.ApplicationViewer.UnempoweredCover
+            if frame then
+                frame:EnableMouse(false)
+                frame:EnableMouseWheel(false)
+                frame:SetToplevel(false)
+            end
+        end
+        if SwirlUIDB.uiSettings.mouseClick.extraActionButton then
+            ExtraActionBarFrame:EnableMouse(false)
+            ExtraAbilityContainer:EnableMouse(false)
+        end
+    end
+end
+
 local function ApplyUISettings()
     ApplyChatBubbleSettings()
     ApplyUIErrorsSettings()
     ApplyActionStatusSettings()
     ApplyQuestObjectivesSettings()
+    ApplyMouseClickSettings()
 end
 
 local function RegisterUISettingsCallbacks()
@@ -378,6 +396,7 @@ local function RegisterUISettingsCallbacks()
     AF.RegisterCallback("SwirlUI_QuestObjectives_Changed", ApplyQuestObjectivesSettings, "medium", "QuestObjectivesUpdate")
     AF.RegisterCallback("SwirlUI_Chat_Changed", ChatRemoveShadows, "medium", "ChatUpdate")
     AF.RegisterCallback("SwirlUI_AbstractFrameworkPopups_Changed", MoveAbstractFrameworkPopups, "medium", "AbstractFrameworkPopupsUpdate")
+    AF.RegisterCallback("SwirlUI_MouseClick_Changed", ApplyMouseClickSettings, "medium", "MouseClickUpdate")
 end
 
 local function CheckProfileVersionUpdates()
@@ -433,7 +452,8 @@ local function SetupDB()
         uiErrors = { enabled = true, fontSize = 12, offsetX = 0, offsetY = 200 },
         actionStatus = { enabled = true, fontSize = 12, offsetX = 0, offsetY = 200 },
         questObjectives = { enabled = true, fontSize = 12, removeGraphics = true },
-        chat = { disableChatShadows = true }
+        chat = { disableChatShadows = true },
+        mouseClick = { extraActionButton = true, lfgListFrame = true },
     }
 
     if not SwirlUIDB.uiSettings then

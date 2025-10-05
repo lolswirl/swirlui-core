@@ -230,7 +230,42 @@ local function CreateOptionsTab()
     AF.SetPoint(chatEnabled, "TOPLEFT", chatGroup, "TOPLEFT", firstWidgetStartX, firstWidgetStartY)
     chatEnabled:SetChecked(SwirlUIDB.uiSettings.chat.disableChatShadows)
 
-    scrollFrame:SetContentHeight(680)
+    -- mouse click settings
+    local mouseClickGroup = AF.CreateBorderedFrame(scrollFrame.scrollContent, nil, borderedFrameWidth, checkboxOnlyHeight * 2 - 10, "background2", "black")
+    mouseClickGroup:SetLabel("Mouse Click")
+    AF.SetPoint(mouseClickGroup, "TOPLEFT", chatGroup, "BOTTOMLEFT", 0, -25)
+    SetGroupHoverEffect(mouseClickGroup)
+
+    local extraActionButtonCheckbox = AF.CreateCheckButton(mouseClickGroup, "Remove Empty Spacing around Extra Action Button", function(checked)
+        if not SwirlUIDB.uiSettings.mouseClick then
+            SwirlUIDB.uiSettings.mouseClick = { extraActionButton = false, lfgListFrame = false }
+        end
+        SwirlUIDB.uiSettings.mouseClick.extraActionButton = checked
+        AF.Fire("SwirlUI_MouseClick_Changed")
+        SwirlUI.SettingsChanged = true
+    end)
+    AF.SetPoint(extraActionButtonCheckbox, "TOPLEFT", mouseClickGroup, "TOPLEFT", firstWidgetStartX, firstWidgetStartY)
+
+    local lfgListFrameCheckbox = AF.CreateCheckButton(mouseClickGroup, "Enable Click-Through in LFG", function(checked)
+        if not SwirlUIDB.uiSettings.mouseClick then
+            SwirlUIDB.uiSettings.mouseClick = { extraActionButton = false, lfgListFrame = false }
+        end
+        SwirlUIDB.uiSettings.mouseClick.lfgListFrame = checked
+        AF.Fire("SwirlUI_MouseClick_Changed")
+        SwirlUI.SettingsChanged = true
+    end)
+    AF.SetPoint(lfgListFrameCheckbox, "TOPLEFT", extraActionButtonCheckbox, "BOTTOMLEFT", 0, -10)
+
+    if SwirlUIDB.uiSettings.mouseClick then
+        if SwirlUIDB.uiSettings.mouseClick.extraActionButton then
+            extraActionButtonCheckbox:SetChecked(true)
+        end
+        if SwirlUIDB.uiSettings.mouseClick.lfgListFrame then
+            lfgListFrameCheckbox:SetChecked(true)
+        end
+    end
+
+    scrollFrame:SetContentHeight(760)
 end
 
 local function ShowTab(callback, tab)
