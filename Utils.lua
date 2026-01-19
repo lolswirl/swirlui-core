@@ -19,11 +19,6 @@ function SwirlUI.Utils:HasProfile(addon, silent)
     if not IsAddOnLoaded(addon.name) then
         return false
     end
-
-    if addon.name == "VocalRaidAssistant" then
-        -- vocal raid assistant doesn't work without this lol
-        addon.database = VocalRaidAssistantDB
-    end
     
     if not addon.database or not addon.database["profiles"] or 
        (not addon.database["profiles"][SwirlUI.Profile] and not addon.database["profiles"][SwirlUI.ProfileTenEightyP]) then
@@ -185,13 +180,7 @@ function SwirlUI.Utils:Import(addonName, notification)
 
     local data = SwirlUI.Utils:Decode(importProfile.string)
 
-    local db
-    if importProfile.name == "VocalRaidAssistant" then
-        -- why can't i just importProfile.database on this!!!!
-        db = VocalRaidAssistantDB
-    else
-        db = importProfile.database
-    end
+    local db = importProfile.database
 
     db.profiles = db.profiles or {}
     db.profileKeys = db.profileKeys or {}

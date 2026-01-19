@@ -130,17 +130,6 @@ function SwirlUI.Imports:ExportBasicMinimap()
     return SwirlUI.Utils:Export(data, basicMinimap)
 end
 
-function SwirlUI.Imports:ImportVocalRaidAssistant(notification)
-    return SwirlUI.Utils:Import("VocalRaidAssistant", notification)
-end
-
-function SwirlUI.Imports:ExportVocalRaidAssistant()
-    local vocalRaidAssistant = SwirlUI.Utils:GetImportProfile("VocalRaidAssistant")
-    -- no idea why i can't call vocalRaidAssistant.database when its defined in Strings.lua
-    local data = VocalRaidAssistantDB["profiles"][SwirlUI.Profile]
-    return SwirlUI.Utils:Export(data, vocalRaidAssistant)
-end
-
 function SwirlUI.Imports:ImportMasque(notification)
     return SwirlUI.Utils:Import("Masque", notification)
 end
