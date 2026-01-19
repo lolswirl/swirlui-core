@@ -1,4 +1,4 @@
-local _, SwirlUI = ...
+local addonName, SwirlUI = ...
 local AF = _G.AbstractFramework
 
 local profilesTab
@@ -17,14 +17,14 @@ local function CreateProfilesTab()
     local statusGroup = AF.CreateTitledPane(profilesTab, "Profile Status", 430, statusGroupHeight)
     AF.SetPoint(statusGroup, "TOPLEFT", profilesTab, "TOPLEFT", 5, -25)
 
-    importAllBtn = AF.CreateButton(statusGroup, "Import All Profiles", "accent_hover", 210, 24)
+    importAllBtn = AF.CreateButton(statusGroup, "Import All Profiles", addonName, 210, 24)
     AF.SetPoint(importAllBtn, "BOTTOMLEFT", statusGroup, "BOTTOMLEFT", 0, 0)
     importAllBtn:SetOnClick(function()
         SwirlUI.Imports:ImportAll()
         SwirlUI.CreateStatusDisplay_AF()
     end)
 
-    applyAllBtn = AF.CreateButton(statusGroup, "Apply All Profiles", "accent_hover", 210, 24)
+    applyAllBtn = AF.CreateButton(statusGroup, "Apply All Profiles", addonName, 210, 24)
     AF.SetPoint(applyAllBtn, "BOTTOMRIGHT", statusGroup, "BOTTOMRIGHT", 0, 0)
     applyAllBtn:SetOnClick(function()
         SwirlUI.Imports:ApplyProfiles()

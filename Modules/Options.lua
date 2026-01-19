@@ -1,11 +1,11 @@
-local _, SwirlUI = ...
+local addonName, SwirlUI = ...
 local AF = _G.AbstractFramework
 
 local optionsTab
 
 local function SetGroupHoverEffect(group)
     group:SetScript("OnEnter", function(self)
-        self:SetBackdropBorderColor(AF.GetColorRGB("accent"))
+        self:SetBackdropBorderColor(AF.GetColorRGB(addonName))
     end)
 
     group:SetScript("OnLeave", function(self)
@@ -70,7 +70,7 @@ local function CreateOptionsTab()
     local presetScales = {0.53, 0.63, 0.71, 1}
     for i, scale in ipairs(presetScales) do
         local buttonWidth = (availableWidgetWidth - ((#presetScales - 1) * 5)) / #presetScales
-        local scaleBtn = AF.CreateButton(uiScaleGroup, tostring(scale), "accent_hover", buttonWidth, 22)
+        local scaleBtn = AF.CreateButton(uiScaleGroup, tostring(scale), addonName, buttonWidth, 22)
         AF.SetPoint(scaleBtn, "TOPLEFT", uiScaleSlider, "BOTTOMLEFT", (i-1) * (buttonWidth + 5), -20)
         scaleBtn:SetOnClick(function()
             SetCVar("UIScale", scale)

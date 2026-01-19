@@ -1,4 +1,4 @@
-local _, SwirlUI = ...
+local addonName, SwirlUI = ...
 local U = SwirlUI.Utils
 local AF = _G.AbstractFramework
 
@@ -8,8 +8,17 @@ AF.AddColor(SwirlUI.Hostile, SwirlUI.Hostile)
 AF.AddColor(SwirlUI.Friendly, SwirlUI.Friendly)
 AF.AddColor(SwirlUI.Neutral, SwirlUI.Neutral)
 AF.AddColor(SwirlUI.Orange, SwirlUI.Orange)
-AF.AddColor("accent", AF.GetColorHex(UNIT_CLASS))
-AF.AddButtonColor("accent_hover", {0.15, 0.15, 0.15, 1}, AF.GetColorTable("accent", 0.7))
+AF.RegisterAddon(addonName)
+print(AF.GetColorHex(UNIT_CLASS))
+AF.SetAddonAccentColor(
+    addonName,
+    AF.GetColorHex(UNIT_CLASS),
+    {0.15, 0.15, 0.15, 1},
+    AF.GetColorHex(UNIT_CLASS, 0.7)
+)
+-- AF.AddColor("accent", AF.GetColorHex(UNIT_CLASS))
+-- AF.AddColor("accent_hover", AF.GetColorHex(UNIT_CLASS))
+-- AF.AddButtonColor("accent_hover", {0.15, 0.15, 0.15, 1}, AF.GetColorTable("accent", 0.7))
 AF.AddColor("background", {0.024, 0.024, 0.031, 0.75})
 AF.AddColor("background2", {0.024, 0.024, 0.031, 0.3})
 
@@ -30,8 +39,8 @@ local lastShownTab
 local profilesBtn, optionsBtn
 
 local function CreateTabButtons(optionsFrame)
-    profilesBtn = AF.CreateButton(optionsFrame, "Profiles", "accent_hover", 220, 21)
-    optionsBtn = AF.CreateButton(optionsFrame, "Options", "accent_hover", 221, 21)
+    profilesBtn = AF.CreateButton(optionsFrame, "Profiles", addonName, 220, 21)
+    optionsBtn = AF.CreateButton(optionsFrame, "Options", addonName, 221, 21)
 
     profilesBtn:SetFrameLevel(optionsFrame:GetFrameLevel() + 2)
     optionsBtn:SetFrameLevel(optionsFrame:GetFrameLevel() + 2)
@@ -130,7 +139,7 @@ function SwirlUI.ShowExportGUI_AF()
 
     local yOffset = -25
     for _, profile in ipairs(SwirlUI.ImportProfiles) do
-        local btn = AF.CreateButton(exportGroup, string.format("Export %s", SwirlUI.ApplyColor(profile.name, profile.color)), "accent_hover", 300, 24)
+        local btn = AF.CreateButton(exportGroup, string.format("Export %s", SwirlUI.ApplyColor(profile.name, profile.color)), addonName, 300, 24)
         AF.SetPoint(btn, "TOPLEFT", 0, yOffset)
         yOffset = yOffset - 29
         btn:SetOnClick(function()
@@ -190,7 +199,7 @@ function SwirlUI.CreateStatusDialog(title, content, editBoxContent)
         yOffset = yOffset - 40
     end
 
-    local okBtn = AF.CreateButton(frame, "OK", "accent_hover", 80, 24)
+    local okBtn = AF.CreateButton(frame, "OK", addonName, 80, 24)
     AF.SetPoint(okBtn, "BOTTOM", frame, "BOTTOM", 0, 5)
     okBtn:SetOnClick(function()
         frame:Hide()
