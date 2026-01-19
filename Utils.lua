@@ -20,10 +20,7 @@ function SwirlUI.Utils:HasProfile(addon, silent)
         return false
     end
 
-    if addon.name == "MinimapStats" then
-        -- minimapstats doesn't have profiles lol
-        return true
-    elseif addon.name == "VocalRaidAssistant" then
+    if addon.name == "VocalRaidAssistant" then
         -- vocal raid assistant doesn't work without this lol
         addon.database = VocalRaidAssistantDB
     end
@@ -47,21 +44,6 @@ function SwirlUI.Utils:CheckAddOnLoaded(addon)
 end
 
 function SwirlUI.Utils:IsProfileApplied(addon)
-    if addon.name == "MinimapStats" then
-        if not addon.database or not addon.database["global"] then
-            return false
-        end
-
-        local hasAllValues = true
-        for key, value in pairs(addon.data) do
-            if addon.database.global[key] ~= value then
-                hasAllValues = false
-                break
-            end
-        end
-
-        return hasAllValues
-    end
 
     local profileKey = string.format("%s - %s", UnitName("player"), GetRealmName())
     local activeProfile = addon.database["profileKeys"] and addon.database["profileKeys"][profileKey]
@@ -105,19 +87,6 @@ function SwirlUI.Utils:ApplyProfile(profile)
     if not IsAddOnLoaded(profile.name) then
         self:Print(string.format("%s addon not loaded", SwirlUI.ApplyColor(profile.name, profile.color)))
         return false
-    end
-
-    if profile.name == "MinimapStats" then
-        if not profile.database or not profile.database["global"] then
-            self:Print(string.format("No profile found for %s", SwirlUI.ApplyColor(profile.name, profile.color)))
-            return false
-        end
-
-        SwirlUI.Imports:ImportMinimapStats()
-        self:Print(string.format("Applied %s profile", SwirlUI.ApplyColor(profile.name, profile.color)))
-        
-        self:StoreProfileVersion(profile)
-        return true
     end
 
     if not profile.database or not profile.database["profiles"] or 

@@ -149,28 +149,6 @@ function SwirlUI.Imports:ExportMasque()
     return SwirlUI.Utils:Export(data, masque)
 end
 
-function SwirlUI.Imports:ImportMinimapStats(notification)
-    local importProfile = SwirlUI.Utils:GetImportProfile("MinimapStats")
-    if not importProfile or not SwirlUI.Utils:CheckAddOnLoaded(importProfile) then
-        return false
-    end
-    importProfile.database.global = importProfile.data
-    SwirlUI.SettingsChanged = true
-    if notification then
-        AF.ShowNotificationPopup(string.format("%s\n Imported %s", SwirlUI.NameNoCore, SwirlUI.ApplyColor(importProfile.name, importProfile.color)), 2)
-    else
-        SwirlUI.Utils:Print(string.format("Imported %s", SwirlUI.ApplyColor(importProfile.name, importProfile.color)))
-    end
-    SwirlUI.Utils:StoreProfileVersion(importProfile)
-    return true
-end
-
-function SwirlUI.Imports:ExportMinimapStats()
-    local minimapStats = SwirlUI.Utils:GetImportProfile("MinimapStats")
-    local data = minimapStats.database.global
-    return SwirlUI.Utils:Export(data, minimapStats)
-end
-
 function SwirlUI.Imports:GetAddonStatus(addonName, database)
     if not C_AddOns.IsAddOnLoaded(addonName) then
         return SwirlUI.STATUS.DISABLED, SwirlUI.Hostile
