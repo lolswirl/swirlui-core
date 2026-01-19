@@ -9,7 +9,6 @@ AF.AddColor(SwirlUI.Friendly, SwirlUI.Friendly)
 AF.AddColor(SwirlUI.Neutral, SwirlUI.Neutral)
 AF.AddColor(SwirlUI.Orange, SwirlUI.Orange)
 AF.RegisterAddon(addonName)
-print(AF.GetColorHex(UNIT_CLASS))
 AF.SetAddonAccentColor(
     addonName,
     AF.GetColorHex(UNIT_CLASS),
