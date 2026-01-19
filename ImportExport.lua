@@ -92,7 +92,9 @@ end
 
 function SwirlUI.Imports:ImportBufflehead(notification)
     local db = SwirlUI.Utils:Import("Bufflehead", notification)
-    db["global"]["hideOmniCC"] = false
+    if db then
+        db["global"]["hideOmniCC"] = false
+    end
     return true
 end
 
