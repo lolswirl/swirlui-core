@@ -1,4 +1,4 @@
-## Interface: 120001
+## Interface: 120000,120001
 ## Title: |cff02fd98Swirl|rUI Core
 ## Notes: Custom configs made for |cff02fd98Swirl|rUI
 ## Author: Swirl
