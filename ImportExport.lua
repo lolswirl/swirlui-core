@@ -114,16 +114,6 @@ function SwirlUI.Imports:ExportBasicMinimap()
     return SwirlUI.Utils:Export(data, basicMinimap)
 end
 
-function SwirlUI.Imports:ImportMasque(notification)
-    return SwirlUI.Utils:Import("Masque", notification)
-end
-
-function SwirlUI.Imports:ExportMasque()
-    local masque = SwirlUI.Utils:GetImportProfile("Masque")
-    local data = masque.database["profiles"][SwirlUI.Profile]
-    return SwirlUI.Utils:Export(data, masque)
-end
-
 function SwirlUI.Imports:GetAddonStatus(addonName, database)
     if not C_AddOns.IsAddOnLoaded(addonName) then
         return SwirlUI.STATUS.DISABLED, SwirlUI.Hostile
