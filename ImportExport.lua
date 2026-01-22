@@ -90,20 +90,6 @@ function SwirlUI.Imports:ApplyProfiles()
     return true
 end
 
-function SwirlUI.Imports:ImportBufflehead(notification)
-    local db = SwirlUI.Utils:Import("Bufflehead", notification)
-    if db then
-        db["global"]["hideOmniCC"] = false
-    end
-    return true
-end
-
-function SwirlUI.Imports:ExportBufflehead()
-    local bufflehead = SwirlUI.Utils:GetImportProfile("Bufflehead")
-    local data = bufflehead.database["profiles"][SwirlUI.Profile]
-    return SwirlUI.Utils:Export(data, bufflehead)
-end
-
 function SwirlUI.Imports:ImportBasicMinimap(notification)
     return SwirlUI.Utils:Import("BasicMinimap", notification)
 end
