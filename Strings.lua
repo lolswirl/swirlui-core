@@ -26,11 +26,6 @@ SwirlUI.ImportProfiles = {
 
 SwirlUI.ApplyAddons = {
     {
-        name = "OmniCD",
-        database = OmniCDDB,
-        color = "c10003"
-    },
-    {
         name = "BigWigs",
         database = BigWigs3DB,
         color = "fe500e"
