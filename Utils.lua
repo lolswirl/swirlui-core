@@ -185,15 +185,6 @@ function SwirlUI.Utils:Import(addonName, notification)
     db.profiles = db.profiles or {}
     db.profileKeys = db.profileKeys or {}
 
-    if addonName == "Prat-3.0" and importProfile.namespace and importProfile.namespace ~= "" then
-        local namespaceData = SwirlUI.Utils:Decode(importProfile.namespace)
-
-        if db.namespaces then
-            wipe(db.namespaces)
-        end
-        db.namespaces = namespaceData
-    end
-
     if db.profiles[SwirlUI.Profile] then
         wipe(db.profiles[SwirlUI.Profile])
         db.profiles[SwirlUI.Profile] = data

@@ -104,22 +104,6 @@ function SwirlUI.Imports:ExportBufflehead()
     return SwirlUI.Utils:Export(data, bufflehead)
 end
 
-function SwirlUI.Imports:ImportPrat(notification)
-    return SwirlUI.Utils:Import("Prat-3.0", notification)
-end
-
-function SwirlUI.Imports:ExportPrat()
-    local prat = SwirlUI.Utils:GetImportProfile("Prat-3.0")
-
-    local profileData = prat.database["profiles"][SwirlUI.Profile]
-    local namespacesData = prat.database["namespaces"]
-
-    SwirlUI.Utils:Export(profileData, prat, false)
-    SwirlUI.Utils:Export(namespacesData, prat, true)
-
-    return true
-end
-
 function SwirlUI.Imports:ImportBasicMinimap(notification)
     return SwirlUI.Utils:Import("BasicMinimap", notification)
 end
