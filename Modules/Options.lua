@@ -34,28 +34,10 @@ local function SetGroupHoverEffect(group)
     end)
 end
 
-local function CreateOptionsTab()
-    optionsTab = AF.CreateFrame(SwirlUI.frames.optionsFrame, "SwirlUI_OptionsTab", nil, nil, true)
-    optionsTab:SetAllPoints(SwirlUI.frames.optionsFrame)
-    SwirlUI.frames.optionsTab = optionsTab
-
-    local width = 440
-    local borderedFrameWidth = width - 15
-    local scrollFrame = AF.CreateScrollFrame(SwirlUI.frames.optionsTab, nil, width, 380, "none", "black")
-    AF.SetPoint(scrollFrame, "TOPLEFT", SwirlUI.frames.optionsTab, "TOPLEFT", 0, -20)
-
-    local availableWidgetWidth = borderedFrameWidth - 10
-    local firstWidgetStartX = 5
-    local firstWidgetStartY = -10
-
-    local checkboxOnlyHeight = 34
-    local doubleWidgetHeight = 82
-    local tripleWidgetHeight = 127
-
-    -- ui scale
-    local uiScaleGroup = AF.CreateBorderedFrame(scrollFrame.scrollContent, nil, borderedFrameWidth, doubleWidgetHeight - 2, "background2", "black")
+local function CreateUIScaleGroup(scrollContent, borderedFrameWidth, availableWidgetWidth)
+    local uiScaleGroup = AF.CreateBorderedFrame(scrollContent, nil, borderedFrameWidth, 80, "background2", "black")
     uiScaleGroup:SetLabel("UI Scale")
-    AF.SetPoint(uiScaleGroup, "TOPLEFT", scrollFrame.scrollContent, "TOPLEFT", 5, -20)
+    AF.SetPoint(uiScaleGroup, "TOPLEFT", scrollContent, "TOPLEFT", 5, -20)
     SetGroupHoverEffect(uiScaleGroup)
 
     local uiScaleSlider = AF.CreateSlider(uiScaleGroup, "UI Scale", availableWidgetWidth, 0.1, 2, 0.01, false, true)
@@ -80,10 +62,13 @@ local function CreateOptionsTab()
         end)
     end
 
-    -- chat bubbles
-    local chatBubblesGroup = AF.CreateBorderedFrame(scrollFrame.scrollContent, nil, borderedFrameWidth, doubleWidgetHeight, "background2", "black")
+    return uiScaleGroup
+end
+
+local function CreateChatBubblesGroup(scrollContent, previousGroup, borderedFrameWidth)
+    local chatBubblesGroup = AF.CreateBorderedFrame(scrollContent, nil, borderedFrameWidth, 82, "background2", "black")
     chatBubblesGroup:SetLabel("Chat Bubbles")
-    AF.SetPoint(chatBubblesGroup, "TOPLEFT", uiScaleGroup, "BOTTOMLEFT", 0, -25)
+    AF.SetPoint(chatBubblesGroup, "TOPLEFT", previousGroup, "BOTTOMLEFT", 0, -25)
     SetGroupHoverEffect(chatBubblesGroup)
 
     local chatBubblesEnabled = AF.CreateCheckButton(chatBubblesGroup, "Enable", function(checked)
@@ -91,7 +76,7 @@ local function CreateOptionsTab()
         AF.Fire("SwirlUI_ChatBubbles_Changed")
         SwirlUI.SettingsChanged = true
     end)
-    AF.SetPoint(chatBubblesEnabled, "TOPLEFT", chatBubblesGroup, "TOPLEFT", firstWidgetStartX, firstWidgetStartY)
+    AF.SetPoint(chatBubblesEnabled, "TOPLEFT", chatBubblesGroup, "TOPLEFT", 5, -10)
     chatBubblesEnabled:SetChecked(SwirlUIDB.uiSettings.chatBubbles.enabled)
 
     local chatBubblesFontSize = AF.CreateSlider(chatBubblesGroup, "Font Size", 200, 2, 24, 1, false, true)
@@ -103,10 +88,13 @@ local function CreateOptionsTab()
         SwirlUI.SettingsChanged = true
     end)
 
-    -- ui errors
-    local uiErrorsGroup = AF.CreateBorderedFrame(scrollFrame.scrollContent, nil, borderedFrameWidth, tripleWidgetHeight, "background2", "black")
+    return chatBubblesGroup
+end
+
+local function CreateUIErrorsGroup(scrollContent, previousGroup, borderedFrameWidth)
+    local uiErrorsGroup = AF.CreateBorderedFrame(scrollContent, nil, borderedFrameWidth, 127, "background2", "black")
     uiErrorsGroup:SetLabel("UI Errors")
-    AF.SetPoint(uiErrorsGroup, "TOPLEFT", chatBubblesGroup, "BOTTOMLEFT", 0, -25)
+    AF.SetPoint(uiErrorsGroup, "TOPLEFT", previousGroup, "BOTTOMLEFT", 0, -25)
     SetGroupHoverEffect(uiErrorsGroup)
 
     local uiErrorsEnabled = AF.CreateCheckButton(uiErrorsGroup, "Enable", function(checked)
@@ -114,7 +102,7 @@ local function CreateOptionsTab()
         AF.Fire("SwirlUI_UIErrors_Changed")
         SwirlUI.SettingsChanged = true
     end)
-    AF.SetPoint(uiErrorsEnabled, "TOPLEFT", uiErrorsGroup, "TOPLEFT", firstWidgetStartX, firstWidgetStartY)
+    AF.SetPoint(uiErrorsEnabled, "TOPLEFT", uiErrorsGroup, "TOPLEFT", 5, -10)
     uiErrorsEnabled:SetChecked(SwirlUIDB.uiSettings.uiErrors.enabled)
 
     local uiErrorsFontSize = AF.CreateSlider(uiErrorsGroup, "Font Size", 200, 8, 24, 1, false, true)
@@ -144,10 +132,13 @@ local function CreateOptionsTab()
         SwirlUI.SettingsChanged = true
     end)
 
-    -- action status
-    local actionStatusGroup = AF.CreateBorderedFrame(scrollFrame.scrollContent, nil, borderedFrameWidth, tripleWidgetHeight, "background2", "black")
+    return uiErrorsGroup
+end
+
+local function CreateActionStatusGroup(scrollContent, previousGroup, borderedFrameWidth)
+    local actionStatusGroup = AF.CreateBorderedFrame(scrollContent, nil, borderedFrameWidth, 127, "background2", "black")
     actionStatusGroup:SetLabel("Action Status")
-    AF.SetPoint(actionStatusGroup, "TOPLEFT", uiErrorsGroup, "BOTTOMLEFT", 0, -25)
+    AF.SetPoint(actionStatusGroup, "TOPLEFT", previousGroup, "BOTTOMLEFT", 0, -25)
     SetGroupHoverEffect(actionStatusGroup)
 
     local actionStatusEnabled = AF.CreateCheckButton(actionStatusGroup, "Enable", function(checked)
@@ -155,7 +146,7 @@ local function CreateOptionsTab()
         AF.Fire("SwirlUI_ActionStatus_Changed")
         SwirlUI.SettingsChanged = true
     end)
-    AF.SetPoint(actionStatusEnabled, "TOPLEFT", actionStatusGroup, "TOPLEFT", firstWidgetStartX, firstWidgetStartY)
+    AF.SetPoint(actionStatusEnabled, "TOPLEFT", actionStatusGroup, "TOPLEFT", 5, -10)
     actionStatusEnabled:SetChecked(SwirlUIDB.uiSettings.actionStatus.enabled)
 
     local actionStatusFontSize = AF.CreateSlider(actionStatusGroup, "Font Size", 200, 8, 24, 1, false, true)
@@ -185,10 +176,13 @@ local function CreateOptionsTab()
         SwirlUI.SettingsChanged = true
     end)
 
-    -- quest objectives
-    local questObjectivesGroup = AF.CreateBorderedFrame(scrollFrame.scrollContent, nil, borderedFrameWidth, doubleWidgetHeight, "background2", "black")
+    return actionStatusGroup
+end
+
+local function CreateQuestObjectivesGroup(scrollContent, previousGroup, borderedFrameWidth)
+    local questObjectivesGroup = AF.CreateBorderedFrame(scrollContent, nil, borderedFrameWidth, 82, "background2", "black")
     questObjectivesGroup:SetLabel("Quest Objectives")
-    AF.SetPoint(questObjectivesGroup, "TOPLEFT", actionStatusGroup, "BOTTOMLEFT", 0, -25)
+    AF.SetPoint(questObjectivesGroup, "TOPLEFT", previousGroup, "BOTTOMLEFT", 0, -25)
     SetGroupHoverEffect(questObjectivesGroup)
 
     local questObjectivesEnabled = AF.CreateCheckButton(questObjectivesGroup, "Enable", function(checked)
@@ -196,7 +190,7 @@ local function CreateOptionsTab()
         AF.Fire("SwirlUI_QuestObjectives_Changed")
         SwirlUI.SettingsChanged = true
     end)
-    AF.SetPoint(questObjectivesEnabled, "TOPLEFT", questObjectivesGroup, "TOPLEFT", firstWidgetStartX, firstWidgetStartY)
+    AF.SetPoint(questObjectivesEnabled, "TOPLEFT", questObjectivesGroup, "TOPLEFT", 5, -10)
     questObjectivesEnabled:SetChecked(SwirlUIDB.uiSettings.questObjectives.enabled)
 
     local questObjectivesRemoveGraphics = AF.CreateCheckButton(questObjectivesGroup, "Remove Graphics", function(checked)
@@ -216,10 +210,13 @@ local function CreateOptionsTab()
         SwirlUI.SettingsChanged = true
     end)
 
-    -- chat
-    local chatGroup = AF.CreateBorderedFrame(scrollFrame.scrollContent, nil, borderedFrameWidth, checkboxOnlyHeight, "background2", "black")
+    return questObjectivesGroup
+end
+
+local function CreateChatGroup(scrollContent, previousGroup, borderedFrameWidth)
+    local chatGroup = AF.CreateBorderedFrame(scrollContent, nil, borderedFrameWidth, 34, "background2", "black")
     chatGroup:SetLabel("Chat")
-    AF.SetPoint(chatGroup, "TOPLEFT", questObjectivesGroup, "BOTTOMLEFT", 0, -25)
+    AF.SetPoint(chatGroup, "TOPLEFT", previousGroup, "BOTTOMLEFT", 0, -25)
     SetGroupHoverEffect(chatGroup)
 
     local chatEnabled = AF.CreateCheckButton(chatGroup, "Remove Text Shadows", function(checked)
@@ -227,13 +224,16 @@ local function CreateOptionsTab()
         AF.Fire("SwirlUI_Chat_Changed")
         SwirlUI.SettingsChanged = true
     end)
-    AF.SetPoint(chatEnabled, "TOPLEFT", chatGroup, "TOPLEFT", firstWidgetStartX, firstWidgetStartY)
+    AF.SetPoint(chatEnabled, "TOPLEFT", chatGroup, "TOPLEFT", 5, -10)
     chatEnabled:SetChecked(SwirlUIDB.uiSettings.chat.disableChatShadows)
 
-    -- mouse click settings
-    local mouseClickGroup = AF.CreateBorderedFrame(scrollFrame.scrollContent, nil, borderedFrameWidth, checkboxOnlyHeight * 2 - 10, "background2", "black")
+    return chatGroup
+end
+
+local function CreateMouseClickGroup(scrollContent, previousGroup, borderedFrameWidth)
+    local mouseClickGroup = AF.CreateBorderedFrame(scrollContent, nil, borderedFrameWidth, 58, "background2", "black")
     mouseClickGroup:SetLabel("Mouse Click")
-    AF.SetPoint(mouseClickGroup, "TOPLEFT", chatGroup, "BOTTOMLEFT", 0, -25)
+    AF.SetPoint(mouseClickGroup, "TOPLEFT", previousGroup, "BOTTOMLEFT", 0, -25)
     SetGroupHoverEffect(mouseClickGroup)
 
     local extraActionButtonCheckbox = AF.CreateCheckButton(mouseClickGroup, "Remove Empty Spacing around Extra Action Button", function(checked)
@@ -244,7 +244,7 @@ local function CreateOptionsTab()
         AF.Fire("SwirlUI_MouseClick_Changed")
         SwirlUI.SettingsChanged = true
     end)
-    AF.SetPoint(extraActionButtonCheckbox, "TOPLEFT", mouseClickGroup, "TOPLEFT", firstWidgetStartX, firstWidgetStartY)
+    AF.SetPoint(extraActionButtonCheckbox, "TOPLEFT", mouseClickGroup, "TOPLEFT", 5, -10)
 
     local lfgListFrameCheckbox = AF.CreateCheckButton(mouseClickGroup, "Enable Click-Through in LFG", function(checked)
         if not SwirlUIDB.uiSettings.mouseClick then
@@ -265,10 +265,13 @@ local function CreateOptionsTab()
         end
     end
 
-    -- buff/debuff skinning
-    local aurasGroup = AF.CreateBorderedFrame(scrollFrame.scrollContent, nil, borderedFrameWidth, doubleWidgetHeight, "background2", "black")
+    return mouseClickGroup
+end
+
+local function CreateAurasGroup(scrollContent, previousGroup, borderedFrameWidth)
+    local aurasGroup = AF.CreateBorderedFrame(scrollContent, nil, borderedFrameWidth, 82, "background2", "black")
     aurasGroup:SetLabel("Skin Buffs & Debuffs")
-    AF.SetPoint(aurasGroup, "TOPLEFT", mouseClickGroup, "BOTTOMLEFT", 0, -25)
+    AF.SetPoint(aurasGroup, "TOPLEFT", previousGroup, "BOTTOMLEFT", 0, -25)
     SetGroupHoverEffect(aurasGroup)
 
     local aurasEnabled = AF.CreateCheckButton(aurasGroup, "Enable", function(checked)
@@ -279,7 +282,7 @@ local function CreateOptionsTab()
         AF.Fire("SwirlUI_Auras_Changed")
         SwirlUI.SettingsChanged = true
     end)
-    AF.SetPoint(aurasEnabled, "TOPLEFT", aurasGroup, "TOPLEFT", firstWidgetStartX, firstWidgetStartY)
+    AF.SetPoint(aurasEnabled, "TOPLEFT", aurasGroup, "TOPLEFT", 5, -10)
     aurasEnabled:SetChecked(SwirlUIDB.uiSettings.skinAuras and SwirlUIDB.uiSettings.skinAuras.enabled or false)
 
     local auraWidth = AF.CreateSlider(aurasGroup, "Width", 200, 16, 64, 1, false, true)
@@ -305,6 +308,30 @@ local function CreateOptionsTab()
         AF.Fire("SwirlUI_Auras_Changed")
         SwirlUI.SettingsChanged = true
     end)
+
+    return aurasGroup
+end
+
+local function CreateOptionsTab()
+    optionsTab = AF.CreateFrame(SwirlUI.frames.optionsFrame, "SwirlUI_OptionsTab", nil, nil, true)
+    optionsTab:SetAllPoints(SwirlUI.frames.optionsFrame)
+    SwirlUI.frames.optionsTab = optionsTab
+
+    local width = 440
+    local borderedFrameWidth = width - 15
+    local scrollFrame = AF.CreateScrollFrame(SwirlUI.frames.optionsTab, nil, width, 380, "none", "black")
+    AF.SetPoint(scrollFrame, "TOPLEFT", SwirlUI.frames.optionsTab, "TOPLEFT", 0, -20)
+
+    local availableWidgetWidth = borderedFrameWidth - 10
+
+    local uiScaleGroup = CreateUIScaleGroup(scrollFrame.scrollContent, borderedFrameWidth, availableWidgetWidth)
+    local chatBubblesGroup = CreateChatBubblesGroup(scrollFrame.scrollContent, uiScaleGroup, borderedFrameWidth)
+    local uiErrorsGroup = CreateUIErrorsGroup(scrollFrame.scrollContent, chatBubblesGroup, borderedFrameWidth)
+    local actionStatusGroup = CreateActionStatusGroup(scrollFrame.scrollContent, uiErrorsGroup, borderedFrameWidth)
+    local questObjectivesGroup = CreateQuestObjectivesGroup(scrollFrame.scrollContent, actionStatusGroup, borderedFrameWidth)
+    local chatGroup = CreateChatGroup(scrollFrame.scrollContent, questObjectivesGroup, borderedFrameWidth)
+    local mouseClickGroup = CreateMouseClickGroup(scrollFrame.scrollContent, chatGroup, borderedFrameWidth)
+    local aurasGroup = CreateAurasGroup(scrollFrame.scrollContent, mouseClickGroup, borderedFrameWidth)
 
     scrollFrame:SetContentHeight(875)
 end
