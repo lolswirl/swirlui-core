@@ -15,8 +15,23 @@ local function ChatRemoveShadows()
     CommunitiesFrame.Chat.MessageFrame:SetShadowOffset(0, 0)
 end
 
+local function DetailsRemoveShadows()
+    if not C_AddOns.IsAddOnLoaded("Details") then return end
+    
+    for i = 1, 3 do
+        local baseFrame = _G["DetailsBaseFrame" .. i]
+        local windowFrame = _G["Details_WindowFrame" .. i]
+        local attributeString = _G["DetailsAttributeStringInstance" .. i]
+        
+        if baseFrame and windowFrame and attributeString then
+            attributeString:SetShadowColor(0, 0, 0, 0)
+        end
+    end
+end
+
 local function AddOnSetups()
     ChatRemoveShadows()
+    DetailsRemoveShadows()
 end
 
 local function BugSackMinimapButton()
