@@ -265,7 +265,48 @@ local function CreateOptionsTab()
         end
     end
 
-    scrollFrame:SetContentHeight(760)
+    -- buff/debuff skinning
+    local aurasGroup = AF.CreateBorderedFrame(scrollFrame.scrollContent, nil, borderedFrameWidth, doubleWidgetHeight, "background2", "black")
+    aurasGroup:SetLabel("Skin Buffs & Debuffs")
+    AF.SetPoint(aurasGroup, "TOPLEFT", mouseClickGroup, "BOTTOMLEFT", 0, -25)
+    SetGroupHoverEffect(aurasGroup)
+
+    local aurasEnabled = AF.CreateCheckButton(aurasGroup, "Enable", function(checked)
+        if not SwirlUIDB.uiSettings.skinAuras then
+            SwirlUIDB.uiSettings.skinAuras = { enabled = false, width = 32, height = 32 }
+        end
+        SwirlUIDB.uiSettings.skinAuras.enabled = checked
+        AF.Fire("SwirlUI_Auras_Changed")
+        SwirlUI.SettingsChanged = true
+    end)
+    AF.SetPoint(aurasEnabled, "TOPLEFT", aurasGroup, "TOPLEFT", firstWidgetStartX, firstWidgetStartY)
+    aurasEnabled:SetChecked(SwirlUIDB.uiSettings.skinAuras and SwirlUIDB.uiSettings.skinAuras.enabled or false)
+
+    local auraWidth = AF.CreateSlider(aurasGroup, "Width", 200, 16, 64, 1, false, true)
+    AF.SetPoint(auraWidth, "TOPLEFT", aurasEnabled, "BOTTOMLEFT", 0, -25)
+    auraWidth:SetValue(SwirlUIDB.uiSettings.skinAuras and SwirlUIDB.uiSettings.skinAuras.width or 32)
+    auraWidth:SetAfterValueChanged(function(value)
+        if not SwirlUIDB.uiSettings.skinAuras then
+            SwirlUIDB.uiSettings.skinAuras = { enabled = false, width = 32, height = 32 }
+        end
+        SwirlUIDB.uiSettings.skinAuras.width = value
+        AF.Fire("SwirlUI_Auras_Changed")
+        SwirlUI.SettingsChanged = true
+    end)
+
+    local auraHeight = AF.CreateSlider(aurasGroup, "Height", 200, 16, 64, 1, false, true)
+    AF.SetPoint(auraHeight, "TOPLEFT", auraWidth, "TOPRIGHT", 10, 0)
+    auraHeight:SetValue(SwirlUIDB.uiSettings.skinAuras and SwirlUIDB.uiSettings.skinAuras.height or 32)
+    auraHeight:SetAfterValueChanged(function(value)
+        if not SwirlUIDB.uiSettings.skinAuras then
+            SwirlUIDB.uiSettings.skinAuras = { enabled = false, width = 32, height = 32 }
+        end
+        SwirlUIDB.uiSettings.skinAuras.height = value
+        AF.Fire("SwirlUI_Auras_Changed")
+        SwirlUI.SettingsChanged = true
+    end)
+
+    scrollFrame:SetContentHeight(875)
 end
 
 local function ShowTab(callback, tab)
