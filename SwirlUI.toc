@@ -1,12 +1,14 @@
 ## Interface: 120000,120001
+
 ## Title: |cff02fd98Swirl|rUI Core
 ## Notes: Custom configs made for |cff02fd98Swirl|rUI
+## Version: @project-version@
 ## Author: Swirl
 ## IconTexture: Interface\AddOns\SwirlUI\media\icon.png
 ## Group: SwirlUI
-## Version: 1.0.0
 ## SavedVariables: SwirlUIDB
 ## Dependencies: SharedMedia_SwirlUI, AbstractFramework
+
 ## X-Wago-ID: jK8XP0Ky
 
 ## Category: User Interface
