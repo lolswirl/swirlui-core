@@ -312,37 +312,6 @@ local function CreateAurasGroup(scrollContent, previousGroup, borderedFrameWidth
     return aurasGroup
 end
 
-local function CreateTooltipGroup(scrollContent, previousGroup, borderedFrameWidth)
-    local tooltipGroup = AF.CreateBorderedFrame(scrollContent, nil, borderedFrameWidth, 58, "background2", "black")
-    tooltipGroup:SetLabel("Tooltip")
-    AF.SetPoint(tooltipGroup, "TOPLEFT", previousGroup, "BOTTOMLEFT", 0, -25)
-    SetGroupHoverEffect(tooltipGroup)
-
-    local tooltipEnabled = AF.CreateCheckButton(tooltipGroup, "Skin Tooltip", function(checked)
-        if not SwirlUIDB.uiSettings.tooltip then
-            SwirlUIDB.uiSettings.tooltip = { enabled = false, attachToCursor = false }
-        end
-        SwirlUIDB.uiSettings.tooltip.enabled = checked
-        AF.Fire("SwirlUI_Tooltip_Changed")
-        SwirlUI.SettingsChanged = true
-    end)
-    AF.SetPoint(tooltipEnabled, "TOPLEFT", tooltipGroup, "TOPLEFT", 5, -10)
-    tooltipEnabled:SetChecked(SwirlUIDB.uiSettings.tooltip and SwirlUIDB.uiSettings.tooltip.enabled or false)
-
-    local tooltipAttachToCursor = AF.CreateCheckButton(tooltipGroup, "Attach to Cursor", function(checked)
-        if not SwirlUIDB.uiSettings.tooltip then
-            SwirlUIDB.uiSettings.tooltip = { enabled = false, attachToCursor = false }
-        end
-        SwirlUIDB.uiSettings.tooltip.attachToCursor = checked
-        AF.Fire("SwirlUI_Tooltip_Changed")
-        SwirlUI.SettingsChanged = true
-    end)
-    AF.SetPoint(tooltipAttachToCursor, "TOPLEFT", tooltipEnabled, "BOTTOMLEFT", 0, -10)
-    tooltipAttachToCursor:SetChecked(SwirlUIDB.uiSettings.tooltip and SwirlUIDB.uiSettings.tooltip.attachToCursor or false)
-
-    return tooltipGroup
-end
-
 local function CreateOptionsTab()
     optionsTab = AF.CreateFrame(SwirlUI.frames.optionsFrame, "SwirlUI_OptionsTab", nil, nil, true)
     optionsTab:SetAllPoints(SwirlUI.frames.optionsFrame)
@@ -363,7 +332,6 @@ local function CreateOptionsTab()
     local chatGroup = CreateChatGroup(scrollFrame.scrollContent, questObjectivesGroup, borderedFrameWidth)
     local mouseClickGroup = CreateMouseClickGroup(scrollFrame.scrollContent, chatGroup, borderedFrameWidth)
     local aurasGroup = CreateAurasGroup(scrollFrame.scrollContent, mouseClickGroup, borderedFrameWidth)
-    local tooltipGroup = CreateTooltipGroup(scrollFrame.scrollContent, aurasGroup, borderedFrameWidth)
 
     scrollFrame:SetContentHeight(960)
 end

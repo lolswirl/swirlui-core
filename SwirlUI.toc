@@ -29,7 +29,6 @@ Constants.lua
 Utils.lua
 Strings.lua
 ImportExport.lua
-Tooltip.lua
 Setup.lua
 GUI.lua
 Modules/Profiles.lua
