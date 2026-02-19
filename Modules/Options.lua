@@ -269,14 +269,14 @@ local function CreateMouseClickGroup(scrollContent, previousGroup, borderedFrame
 end
 
 local function CreateAurasGroup(scrollContent, previousGroup, borderedFrameWidth)
-    local aurasGroup = AF.CreateBorderedFrame(scrollContent, nil, borderedFrameWidth, 82, "background2", "black")
+    local aurasGroup = AF.CreateBorderedFrame(scrollContent, nil, borderedFrameWidth, 127, "background2", "black")
     aurasGroup:SetLabel("Skin Buffs & Debuffs")
     AF.SetPoint(aurasGroup, "TOPLEFT", previousGroup, "BOTTOMLEFT", 0, -25)
     SetGroupHoverEffect(aurasGroup)
 
     local aurasEnabled = AF.CreateCheckButton(aurasGroup, "Enable", function(checked)
         if not SwirlUIDB.uiSettings.skinAuras then
-            SwirlUIDB.uiSettings.skinAuras = { enabled = false, width = 32, height = 32 }
+            SwirlUIDB.uiSettings.skinAuras = { enabled = false, width = 32, height = 32, fontSize = 12 }
         end
         SwirlUIDB.uiSettings.skinAuras.enabled = checked
         AF.Fire("SwirlUI_Auras_Changed")
@@ -290,7 +290,7 @@ local function CreateAurasGroup(scrollContent, previousGroup, borderedFrameWidth
     auraWidth:SetValue(SwirlUIDB.uiSettings.skinAuras and SwirlUIDB.uiSettings.skinAuras.width or 32)
     auraWidth:SetAfterValueChanged(function(value)
         if not SwirlUIDB.uiSettings.skinAuras then
-            SwirlUIDB.uiSettings.skinAuras = { enabled = false, width = 32, height = 32 }
+            SwirlUIDB.uiSettings.skinAuras = { enabled = false, width = 32, height = 32, fontSize = 12 }
         end
         SwirlUIDB.uiSettings.skinAuras.width = value
         AF.Fire("SwirlUI_Auras_Changed")
@@ -302,9 +302,21 @@ local function CreateAurasGroup(scrollContent, previousGroup, borderedFrameWidth
     auraHeight:SetValue(SwirlUIDB.uiSettings.skinAuras and SwirlUIDB.uiSettings.skinAuras.height or 32)
     auraHeight:SetAfterValueChanged(function(value)
         if not SwirlUIDB.uiSettings.skinAuras then
-            SwirlUIDB.uiSettings.skinAuras = { enabled = false, width = 32, height = 32 }
+            SwirlUIDB.uiSettings.skinAuras = { enabled = false, width = 32, height = 32, fontSize = 12 }
         end
         SwirlUIDB.uiSettings.skinAuras.height = value
+        AF.Fire("SwirlUI_Auras_Changed")
+        SwirlUI.SettingsChanged = true
+    end)
+
+    local auraFontSize = AF.CreateSlider(aurasGroup, "Font Size", 200, 8, 24, 1, false, true)
+    AF.SetPoint(auraFontSize, "TOPLEFT", auraWidth, "BOTTOMLEFT", 0, -35)
+    auraFontSize:SetValue(SwirlUIDB.uiSettings.skinAuras and SwirlUIDB.uiSettings.skinAuras.fontSize or 12)
+    auraFontSize:SetAfterValueChanged(function(value)
+        if not SwirlUIDB.uiSettings.skinAuras then
+            SwirlUIDB.uiSettings.skinAuras = { enabled = false, width = 32, height = 32, fontSize = 12 }
+        end
+        SwirlUIDB.uiSettings.skinAuras.fontSize = value
         AF.Fire("SwirlUI_Auras_Changed")
         SwirlUI.SettingsChanged = true
     end)
@@ -333,7 +345,7 @@ local function CreateOptionsTab()
     local mouseClickGroup = CreateMouseClickGroup(scrollFrame.scrollContent, chatGroup, borderedFrameWidth)
     local aurasGroup = CreateAurasGroup(scrollFrame.scrollContent, mouseClickGroup, borderedFrameWidth)
 
-    scrollFrame:SetContentHeight(960)
+    scrollFrame:SetContentHeight(1005)
 end
 
 local function ShowTab(callback, tab)

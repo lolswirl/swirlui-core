@@ -47,10 +47,10 @@ local function BugSackMinimapButton()
 
     if _G["SwirlUIBugSackButton"] then return end
     local SwirlUIBugSackButton = CreateFrame("Button", "SwirlUIBugSackButton", UIParent, "BackdropTemplate")
-    SwirlUIBugSackButton:SetSize(16, 16)
+    SwirlUIBugSackButton:SetSize(22, 22)
     SwirlUIBugSackButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 1.5, 1.5)
     SwirlUIBugSackButton.Text = SwirlUIBugSackButton:CreateFontString(nil, "OVERLAY")
-    SwirlUIBugSackButton.Text:SetFont(SwirlUI.Font, SwirlUI.FontSize, "OUTLINE")
+    SwirlUIBugSackButton.Text:SetFont(SwirlUI.Font, 16, "OUTLINE")
     SwirlUIBugSackButton.Text:SetPoint("CENTER", SwirlUIBugSackButton, "CENTER", 0, 0)
     SwirlUIBugSackButton.Text:SetTextColor(1, 1, 1)
     SwirlUIBugSackButton.Text:SetText("|cFF49AF4C0|r")
@@ -171,11 +171,11 @@ local function DurabilityMinimapDataText()
     end
     
     local SwirlUIDurabilityFrame = CreateFrame("Frame", "SwirlUIDurabilityFrame", _G["SwirlUIBugSackButton"])
-    SwirlUIDurabilityFrame:SetSize(20, SwirlUI.FontSize)
+    SwirlUIDurabilityFrame:SetSize(20, 16)
     SwirlUIDurabilityFrame:SetPoint("LEFT", _G["SwirlUIBugSackButton"], "RIGHT", 2, 0)
     SwirlUIDurabilityFrame:SetFrameStrata("HIGH")
     SwirlUIDurabilityFrame.Text = SwirlUIDurabilityFrame:CreateFontString(nil, "OVERLAY")
-    SwirlUIDurabilityFrame.Text:SetFont(SwirlUI.Font, SwirlUI.FontSize, "OUTLINE")
+    SwirlUIDurabilityFrame.Text:SetFont(SwirlUI.Font, 16, "OUTLINE")
     SwirlUIDurabilityFrame.Text:SetShadowOffset(0, 0)
     SwirlUIDurabilityFrame.Text:SetPoint("LEFT", SwirlUIDurabilityFrame, "LEFT", 0, 0)
 
@@ -420,7 +420,8 @@ end
 local function SkinAuras(auraFrame)
     if auraFrame.isAuraAnchor or not auraFrame.Icon then return end
 
-    auraFrame.Icon:SetSize(32, 32)
+    local auraSizes = SwirlUIDB.uiSettings.skinAuras
+    auraFrame.Icon:SetSize(auraSizes.width or 32, auraSizes.height or 32)
     auraFrame.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 
     if auraFrame.DebuffBorder then
@@ -445,14 +446,16 @@ local function SkinAuras(auraFrame)
     if auraFrame.Duration then
         auraFrame.Duration:ClearAllPoints()
         auraFrame.Duration:SetPoint("CENTER", auraFrame.Icon, "CENTER", 0, 0)
-        auraFrame.Duration:SetFont(SwirlUI.Font, SwirlUI.FontSize + 1, "OUTLINE")
+        local fontSize = (SwirlUIDB and SwirlUIDB.uiSettings and SwirlUIDB.uiSettings.skinAuras and SwirlUIDB.uiSettings.skinAuras.fontSize) or 12
+        auraFrame.Duration:SetFont(SwirlUI.Font, fontSize, "OUTLINE")
         auraFrame.Duration:SetShadowOffset(0, 0)
     end
 
     if auraFrame.Count then
         auraFrame.Count:ClearAllPoints()
         auraFrame.Count:SetPoint("BOTTOMRIGHT", auraFrame.Icon, "BOTTOMRIGHT", 0, 1)
-        auraFrame.Count:SetFont(SwirlUI.Font, SwirlUI.FontSize, "OUTLINE")
+        local fontSize = (SwirlUIDB and SwirlUIDB.uiSettings and SwirlUIDB.uiSettings.skinAuras and SwirlUIDB.uiSettings.skinAuras.fontSize) or 12
+        auraFrame.Count:SetFont(SwirlUI.Font, fontSize, "OUTLINE")
     end
 end
 
@@ -576,7 +579,7 @@ local function SetupDB()
         questObjectives = { enabled = true, fontSize = 12, removeGraphics = true },
         chat = { disableChatShadows = true },
         mouseClick = { extraActionButton = true, lfgListFrame = true },
-        skinAuras = { enabled = true, width = 32, height = 32 },
+        skinAuras = { enabled = true, width = 32, height = 32, fontSize = 12 },
         tooltip = { enabled = true, attachToCursor = true },
     }
 
