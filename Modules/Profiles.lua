@@ -119,7 +119,7 @@ local function CreateProfilesTab()
             
             local statusWidgets = {}
             for _, profile in ipairs(profiles) do
-                local addonName = profile.name or profile.short
+                local addonName = profile.displayName or profile.name or profile.short
                 local addonColor = SwirlUI.Utils:GetAddonStatusColor(profile)
                 
                 local btn = AF.CreateButton(scrollList.slotFrame, SwirlUI.ApplyColor(addonName, profile.color), addonColor .. "_transparent", nil, 22, nil, "none", "")

@@ -94,10 +94,72 @@ function SwirlUI.Imports:ImportBasicMinimap(notification)
     return SwirlUI.Utils:Import("BasicMinimap", notification)
 end
 
+function SwirlUI.Imports:ImportBasicMinimap1440p(notification)
+    -- Find the 1440p profile by short name
+    local profile1440p = nil
+    for _, profile in ipairs(SwirlUI.ImportProfiles) do
+        if profile.short == "BasicMinimap1440p" then
+            profile1440p = profile
+            break
+        end
+    end
+    
+    if not profile1440p or not SwirlUI.Utils:CheckAddOnLoaded(profile1440p) then
+        return false
+    end
+
+    local data = SwirlUI.Utils:Decode(profile1440p.string)
+    local db = profile1440p.database
+
+    db.profiles = db.profiles or {}
+    db.profileKeys = db.profileKeys or {}
+
+    local characterProfile = string.format("%s - %s", UnitName("player"), GetRealmName())
+    local targetProfile = profile1440p.targetProfile or SwirlUI.ProfileFourteenFortyP
+
+    if db.profiles[targetProfile] then
+        wipe(db.profiles[targetProfile])
+        db.profiles[targetProfile] = data
+        db.profileKeys[characterProfile] = targetProfile
+    else
+        db.profiles[targetProfile] = data
+        db.profileKeys[characterProfile] = targetProfile
+    end
+
+    SwirlUI.SettingsChanged = true
+    local displayName = profile1440p.displayName or profile1440p.name
+    if notification then
+        local AF = _G.AbstractFramework
+        AF.ShowNotificationPopup(string.format("%s\n Imported %s", SwirlUI.NameNoCore, SwirlUI.ApplyColor(displayName, profile1440p.color)), 2)
+    else
+        SwirlUI.Utils:Print(string.format("Imported %s", SwirlUI.ApplyColor(displayName, profile1440p.color)))
+    end
+
+    SwirlUI.Utils:StoreProfileVersion(profile1440p)
+
+    return db
+end
+
 function SwirlUI.Imports:ExportBasicMinimap()
     local basicMinimap = SwirlUI.Utils:GetImportProfile("BasicMinimap")
-    local data = basicMinimap.database["profiles"][SwirlUI.Profile]
+    if not basicMinimap then return false end
+    local targetProfile = basicMinimap.targetProfile or SwirlUI.ProfileTenEightyP
+    local data = basicMinimap.database["profiles"][targetProfile]
     return SwirlUI.Utils:Export(data, basicMinimap)
+end
+
+function SwirlUI.Imports:ExportBasicMinimap1440p()
+    -- Search for the 1440p variant by short name
+    local basicMinimap1440p = nil
+    for _, profile in ipairs(SwirlUI.ImportProfiles) do
+        if profile.short == "BasicMinimap1440p" then
+            basicMinimap1440p = profile
+            break
+        end
+    end
+    if not basicMinimap1440p then return false end
+    local data = basicMinimap1440p.database["profiles"][SwirlUI.ProfileFourteenFortyP]
+    return SwirlUI.Utils:Export(data, basicMinimap1440p)
 end
 
 function SwirlUI.Imports:GetAddonStatus(addonName, database)

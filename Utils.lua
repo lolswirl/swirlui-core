@@ -20,14 +20,24 @@ function SwirlUI.Utils:HasProfile(addon, silent)
         return false
     end
     
-    if not addon.database or not addon.database["profiles"] or 
-       (not addon.database["profiles"][SwirlUI.Profile] and not addon.database["profiles"][SwirlUI.ProfileTenEightyP]) then
+    if not addon.database or not addon.database["profiles"] then
         if not silent then
-            self:Print(string.format("No profile found for %s", SwirlUI.ApplyColor(addon.name, addon.color)))
+            self:Print(string.format("No profile found for %s", SwirlUI.ApplyColor(addon.displayName or addon.name, addon.color)))
         end
         return false
     end
-    return true
+    
+    -- Check if ANY of the profile variants exist
+    if addon.database["profiles"][SwirlUI.Profile] or 
+       addon.database["profiles"][SwirlUI.ProfileTenEightyP] or 
+       addon.database["profiles"][SwirlUI.ProfileFourteenFortyP] then
+        return true
+    end
+    
+    if not silent then
+        self:Print(string.format("No profile found for %s", SwirlUI.ApplyColor(addon.displayName or addon.name, addon.color)))
+    end
+    return false
 end
 
 function SwirlUI.Utils:CheckAddOnLoaded(addon)
@@ -39,10 +49,13 @@ function SwirlUI.Utils:CheckAddOnLoaded(addon)
 end
 
 function SwirlUI.Utils:IsProfileApplied(addon)
-
     local profileKey = string.format("%s - %s", UnitName("player"), GetRealmName())
     local activeProfile = addon.database["profileKeys"] and addon.database["profileKeys"][profileKey]
-    return activeProfile == SwirlUI.Profile or activeProfile == SwirlUI.ProfileTenEightyP
+    
+    -- Check if the active profile matches ANY variant
+    return activeProfile == SwirlUI.Profile or 
+           activeProfile == SwirlUI.ProfileTenEightyP or 
+           activeProfile == SwirlUI.ProfileFourteenFortyP
 end
 
 function SwirlUI.Utils:GetAddonStatus(addon)
@@ -185,20 +198,24 @@ function SwirlUI.Utils:Import(addonName, notification)
     db.profiles = db.profiles or {}
     db.profileKeys = db.profileKeys or {}
 
-    if db.profiles[SwirlUI.Profile] then
-        wipe(db.profiles[SwirlUI.Profile])
-        db.profiles[SwirlUI.Profile] = data
-        db.profileKeys[characterProfile] = SwirlUI.Profile
+    -- Use targetProfile if specified, otherwise default to base profile
+    local targetProfile = importProfile.targetProfile or SwirlUI.Profile
+
+    if db.profiles[targetProfile] then
+        wipe(db.profiles[targetProfile])
+        db.profiles[targetProfile] = data
+        db.profileKeys[characterProfile] = targetProfile
     else
-        db.profiles[SwirlUI.Profile] = data
-        db.profileKeys[characterProfile] = SwirlUI.Profile
+        db.profiles[targetProfile] = data
+        db.profileKeys[characterProfile] = targetProfile
     end
 
     SwirlUI.SettingsChanged = true
+    local displayName = importProfile.displayName or importProfile.name
     if notification then
-        AF.ShowNotificationPopup(string.format("%s\n Imported %s", SwirlUI.NameNoCore, SwirlUI.ApplyColor(importProfile.name, importProfile.color)), 2)
+        AF.ShowNotificationPopup(string.format("%s\n Imported %s", SwirlUI.NameNoCore, SwirlUI.ApplyColor(displayName, importProfile.color)), 2)
     else
-        self:Print(string.format("Imported %s", SwirlUI.ApplyColor(importProfile.name, importProfile.color)))
+        self:Print(string.format("Imported %s", SwirlUI.ApplyColor(displayName, importProfile.color)))
     end
 
     self:StoreProfileVersion(importProfile)
